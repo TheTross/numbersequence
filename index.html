@@ -142,11 +142,6 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .small-number-line {
-      margin-top: 8px;
-      font-size: 18px;
-      color: #546e7a;
-    }
     .card-row {
       display: flex;
       justify-content: center;
@@ -191,7 +186,7 @@
       font-size: 15px;
       margin-bottom: 4px;
     }
-    /* Number line: two rows layout via grid (10 cols fits 1–10, random 1–10, or 0–18 etc.) */
+    /* Number line: grid (1–10 or scrambled 1–10) */
     .number-line {
       display: grid;
       grid-template-columns: repeat(10, minmax(0, 1fr));
@@ -228,6 +223,13 @@
     .number-bubble.eliminated {
       opacity: 0.25;
     }
+    .number-bubble.disabled {
+      cursor: default;
+      background: #eeeeee;
+      border-color: #bdbdbd;
+      color: #9e9e9e;
+      box-shadow: none;
+    }
     .guess-step-buttons {
       margin-top: 8px;
     }
@@ -245,6 +247,14 @@
     .step-btn.active {
       background: #fff9c4;
       border-color: #fbc02d;
+    }
+    .scramble-toggle {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #455a64;
+    }
+    .scramble-toggle label {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -280,6 +290,9 @@
       }
       return a;
     }
+
+    // Global scramble state for activities (1–10)
+    let scrambleActivities = false;
 
     // Words for numbers 1–10
     const numberWords = [
@@ -387,9 +400,10 @@
       return pages.findIndex(p => p.type === type);
     }
 
-    // Random number line for activities: 1–10 shuffled
+    // Number line for activities: 1–10, ordered or scrambled
     function renderActivityNumberLine() {
-      const nums = shuffleArray([1,2,3,4,5,6,7,8,9,10]);
+      const base = [1,2,3,4,5,6,7,8,9,10];
+      const nums = scrambleActivities ? shuffleArray(base) : base;
       return `
         <div class="number-line">
           ${nums.map(num => `
@@ -399,6 +413,12 @@
               onclick="clickActivityBubble(${num})"
             >${num}</div>
           `).join("")}
+        </div>
+        <div class="scramble-toggle">
+          <label>
+            <input type="checkbox" id="scrambleToggle" ${scrambleActivities ? "checked" : ""} onchange="toggleScramble()" />
+            Scramble numbers
+          </label>
         </div>
       `;
     }
@@ -619,7 +639,7 @@
         html += `
           <div class="pill">Guess My Number</div>
           <h2>I’m thinking of a number between ${guessMin} and ${guessMax}</h2>
-          <p>Tap a number. I’ll tell you if my secret number is higher or lower.</p>
+          <p>Tap a number (not 0). I’ll tell you if my secret number is higher or lower.</p>
           <div class="guess-step-buttons">
             <button class="step-btn ${guessStep === 1 ? 'active' : ''}" onclick="setGuessStep(1)">Count by 1s (0,1,2…)</button>
             <button class="step-btn ${guessStep === 2 ? 'active' : ''}" onclick="setGuessStep(2)">Count by 2s (0,2,4…)</button>
@@ -628,11 +648,12 @@
           <div class="number-line">
             ${numbers.map(num => {
               const extraClass = eliminated[num] ? " eliminated" : "";
+              const disabledClass = num === 0 ? " disabled" : "";
               return `
                 <div
-                  class="number-bubble${extraClass}"
+                  class="number-bubble${extraClass}${disabledClass}"
                   data-num="${num}"
-                  onclick="clickGuessBubble(${num})"
+                  ${num === 0 ? "" : `onclick="clickGuessBubble(${num})"`}
                 >${num}</div>
               `;
             }).join("")}
@@ -663,7 +684,13 @@
       nextBtn.disabled = currentPage === pages.length - 1;
     }
 
-    // Activity bubbles (no sound here – just visual)
+    // Toggle scramble for activity number lines
+    window.toggleScramble = function() {
+      scrambleActivities = !scrambleActivities;
+      renderPage();
+    };
+
+    // Activity bubbles (no sound – just highlight)
     window.clickActivityBubble = function(num) {
       const bubbles = document.querySelectorAll(".number-bubble[data-activity-num]");
       bubbles.forEach(b => b.classList.remove("clicked"));
@@ -671,7 +698,7 @@
       if (bubble) bubble.classList.add("clicked");
     };
 
-    // Navigation from home (no sounds as requested)
+    // Navigation from home (no sound)
     window.goToSection = function(section) {
       let targetIndex = 0;
       if (section === "number") {
@@ -812,7 +839,7 @@
       }
     };
 
-    // Guess My Number – 0–20, step from 0
+    // Guess My Number – 0–20, steps from 0, 0 disabled for clicks
     window.clickGuessBubble = function(num) {
       if (secretNumber === null) resetGuessGame();
       playSound("soundClick");
