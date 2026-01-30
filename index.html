@@ -48,22 +48,16 @@
       text-transform: capitalize;
       color: #5d4037;
     }
-    .dots, .stars {
+    .dots {
       margin: 10px 0 4px;
     }
-    .dot, .star {
+    .dot {
       display: inline-block;
       width: 18px;
       height: 18px;
       margin: 3px;
       border-radius: 50%;
-    }
-    .dot {
       background: #ffca28;
-    }
-    .star {
-      background: #ffeb3b;
-      box-shadow: 0 0 4px rgba(255,235,59,0.8);
     }
     .nav {
       display: flex;
@@ -160,6 +154,31 @@
       font-size: 26px;
       color: #6a1b9a;
     }
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .home-btn {
+      border-radius: 14px;
+      border: 2px solid #bbdefb;
+      background: #e3f2fd;
+      padding: 10px 6px;
+      font-size: 13px;
+      color: #1e88e5;
+      cursor: pointer;
+    }
+    .home-btn b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+    .range-line {
+      margin-top: 6px;
+      font-size: 18px;
+      color: #37474f;
+    }
   </style>
 </head>
 <body>
@@ -184,8 +203,7 @@
       return { type: "number", n };
     });
 
-    // 2) Missing-number sequences for kids to see + say out loud [web:62][web:69]
-    // Simple 1–10 patterns like: 1, 2, __, 4   | 3, __, 5, __, 7   | 6, 7, __, 9, 10
+    // 2) Missing-number sequences (kids see and say them) [web:62][web:69]
     const missingPages = [
       { sequence: [1, 2, null, 4], answers: [3] },               // 1, 2, __, 4
       { sequence: [3, null, 5], answers: [4] },                  // 3, __, 5
@@ -194,18 +212,14 @@
       { sequence: [2, null, 6, null, 10], answers: [4, 8] }      // 2, __, 6, __, 10
     ];
 
-    // 3) Before / After / Between (with number line as visual support)
+    // 3) Before / After / Between
     const relationPages = [
       { mode: "before", shown: 5, answer: 4 },
       { mode: "after", shown: 7, answer: 8 },
       { mode: "between", left: 4, right: 6, answer: 5 }
     ];
 
-    // 4) Extra interactive activities:
-    // - Match number to dots (multiple choice)
-    // - Next number quiz
-    // - Finish the sequence (pattern)
-    // - NEW: Pick the card that has the right missing number
+    // 4) Extra interactive activities
     const extraPages = [
       {
         type: "match",
@@ -231,13 +245,25 @@
       }
     ];
 
-    // Build final ordered pages (no blanks)
+    // 5) Guess My Number (1–20, higher/lower) [web:70][web:73][web:77]
+    const guessMin = 1;
+    const guessMax = 20;
+    let secretNumber = null;
+    let guessMessage = "";
+
+    function resetGuessGame() {
+      secretNumber = Math.floor(Math.random() * (guessMax - guessMin + 1)) + guessMin;
+      guessMessage = "";
+    }
+
+    // Build pages list
     const pages = [];
 
-    // Intro
-    pages.push({ type: "title" });
+    // Home screen
+    pages.push({ type: "home" });
 
-    // Number pages
+    // Section: Numbers 1–10
+    pages.push({ type: "sectionHeader", title: "Numbers 1–10" });
     numberPages.forEach(p => pages.push(p));
 
     // Section: Missing numbers
@@ -258,7 +284,11 @@
       pages.push({ type: item.type, data: item, id: "extra_" + index });
     });
 
-    // Finish page
+    // Guess My Number section
+    pages.push({ type: "sectionHeader", title: "Guess My Number (1–20)" });
+    pages.push({ type: "guessNumber", id: "guess_1" });
+
+    // Finish
     pages.push({ type: "finish" });
 
     let currentPage = 0;
@@ -267,15 +297,42 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
+    // Helper: find first index of a type
+    function firstIndexOfType(type) {
+      return pages.findIndex(p => p.type === type);
+    }
+
     function renderPage() {
       const p = pages[currentPage];
       let html = "";
 
-      if (p.type === "title") {
+      if (p.type === "home") {
         html += `
           <h1>My Number Adventure</h1>
-          <div class="tagline">Count, say, and play with numbers 1–10</div>
-          <p>Tap <b>Next</b> to begin!</p>
+          <div class="tagline">Tap a button to choose your game.</div>
+          <div class="home-grid">
+            <button class="home-btn" onclick="goToSection('number')">
+              <b>Numbers</b>
+              1–10 pages
+            </button>
+            <button class="home-btn" onclick="goToSection('missing')">
+              <b>Missing</b>
+              Fill in numbers
+            </button>
+            <button class="home-btn" onclick="goToSection('relation')">
+              <b>Before / After</b>
+              Number line help
+            </button>
+            <button class="home-btn" onclick="goToSection('games')">
+              <b>Games</b>
+              Matching & patterns
+            </button>
+            <button class="home-btn" onclick="goToSection('guess')">
+              <b>Guess My #</b>
+              1–20 higher / lower
+            </button>
+          </div>
+          <p style="margin-top:10px;">You can always tap <b>Back</b> to come home.</p>
         `;
       }
 
@@ -438,11 +495,29 @@
         `;
       }
 
+      if (p.type === "guessNumber") {
+        if (secretNumber === null) {
+          resetGuessGame();
+        }
+        const rangeLine = Array.from({ length: guessMax }, (_, i) => i + 1).join(" ");
+        html += `
+          <div class="pill">Guess My Number</div>
+          <h2>I’m thinking of a number...</h2>
+          <p>It’s between ${guessMin} and ${guessMax}. Can you find it?</p>
+          <div class="range-line">${rangeLine}</div>
+          <p>Type a guess and I will say “higher” or “lower”.</p>
+          <input class="num-input" id="guessInput" maxlength="2" />
+          <button onclick="makeGuess()">Guess</button>
+          <div id="guessFeedback" class="feedback">${guessMessage}</div>
+          <button style="margin-top:6px;" onclick="resetGuessAndRender()">New Number</button>
+        `;
+      }
+
       if (p.type === "finish") {
         html += `
           <h1>Yay! You did it!</h1>
-          <p class="tagline">You counted, found missing numbers, and played games.</p>
-          <p>Go back to your favourite page and play again.</p>
+          <p class="tagline">You counted, found missing numbers, played games, and guessed numbers to 20.</p>
+          <p>Tap <b>Back</b> to visit the home screen and play again.</p>
         `;
       }
 
@@ -451,8 +526,27 @@
       nextBtn.disabled = currentPage === pages.length - 1;
     }
 
-    // CHECK FUNCTIONS
+    // HOME BUTTON HELPERS
+    window.goToSection = function(section) {
+      let targetIndex = 0;
+      if (section === "number") {
+        targetIndex = firstIndexOfType("number");
+      } else if (section === "missing") {
+        targetIndex = firstIndexOfType("missing");
+      } else if (section === "relation") {
+        targetIndex = firstIndexOfType("relation");
+      } else if (section === "games") {
+        targetIndex = firstIndexOfType("match");
+      } else if (section === "guess") {
+        targetIndex = firstIndexOfType("guessNumber");
+      }
+      if (targetIndex >= 0) {
+        currentPage = targetIndex;
+        renderPage();
+      }
+    };
 
+    // CHECK FUNCTIONS
     window.checkMissing = function(id) {
       const page = pages.find(p => p.id === id);
       const data = page.data;
@@ -561,6 +655,31 @@
       }
     };
 
+    // GUESS MY NUMBER
+    window.makeGuess = function() {
+      const input = document.getElementById("guessInput");
+      const feedback = document.getElementById("guessFeedback");
+      const val = parseInt(input.value, 10);
+
+      if (isNaN(val) || val < guessMin || val > guessMax) {
+        guessMessage = "Pick a number between " + guessMin + " and " + guessMax + ".";
+      } else if (val === secretNumber) {
+        guessMessage = "You got it! The secret number was " + secretNumber + "!";
+      } else if (val < secretNumber) {
+        guessMessage = "Higher than " + val + ". Try again!";
+      } else {
+        guessMessage = "Lower than " + val + ". Try again!";
+      }
+      feedback.textContent = guessMessage;
+      feedback.className = "feedback " + (val === secretNumber ? "good" : "bad");
+      input.value = "";
+    };
+
+    window.resetGuessAndRender = function() {
+      resetGuessGame();
+      renderPage();
+    };
+
     // NAVIGATION
     prevBtn.addEventListener("click", () => {
       if (currentPage > 0) {
@@ -575,6 +694,10 @@
         renderPage();
       }
     });
+
+    function firstIndexOfType(type) {
+      return pages.findIndex(p => p.type === type);
+    }
 
     // First render
     renderPage();
