@@ -6,26 +6,25 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fef6ff;
+      background: linear-gradient(135deg, #ffe0f7, #e3f2fd);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       margin: 0;
     }
     .book {
-      width: 360px;
-      max-width: 90vw;
+      width: 380px;
+      max-width: 92vw;
       background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-      padding: 16px 20px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+      padding: 18px 20px 22px;
       text-align: center;
     }
     h1 {
-      font-size: 22px;
-      margin: 4px 0 8px;
+      font-size: 24px;
+      margin: 4px 0 10px;
       color: #6a1b9a;
     }
     h2 {
@@ -33,31 +32,43 @@
       margin: 8px 0;
       color: #3949ab;
     }
+    p {
+      margin: 4px 0;
+    }
     .big-number {
-      font-size: 64px;
+      font-size: 70px;
       font-weight: bold;
-      margin: 8px 0;
+      margin: 10px 0 4px;
       color: #ff7043;
+      text-shadow: 0 3px 0 #ffccbc;
     }
     .word {
       font-size: 20px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      text-transform: capitalize;
+      color: #5d4037;
     }
-    .dots {
-      margin: 10px 0;
+    .dots, .stars {
+      margin: 10px 0 4px;
     }
-    .dot {
+    .dot, .star {
       display: inline-block;
       width: 18px;
       height: 18px;
       margin: 3px;
       border-radius: 50%;
+    }
+    .dot {
       background: #ffca28;
+    }
+    .star {
+      background: #ffeb3b;
+      box-shadow: 0 0 4px rgba(255,235,59,0.8);
     }
     .nav {
       display: flex;
       justify-content: space-between;
-      margin-top: 14px;
+      margin-top: 16px;
     }
     button {
       background: #42a5f5;
@@ -72,31 +83,37 @@
       background: #cfd8dc;
       cursor: default;
     }
-    .sequence-row {
-      font-size: 22px;
-      margin: 10px 0;
-    }
-    .num-box {
+    .pill {
       display: inline-block;
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 2px dashed #90a4ae;
-      margin: 0 4px;
-      vertical-align: middle;
+      padding: 3px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: #e3f2fd;
+      color: #1976d2;
+      margin-bottom: 6px;
+    }
+    .tagline {
+      font-size: 14px;
+      color: #7e57c2;
+      margin-bottom: 4px;
+    }
+    .sequence-row {
+      font-size: 24px;
+      margin: 12px 0;
     }
     .num-input {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       border: 2px solid #90a4ae;
       text-align: center;
       font-size: 20px;
+      margin: 0 3px;
     }
     .feedback {
       min-height: 20px;
       font-size: 14px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
     .good {
       color: #2e7d32;
@@ -104,35 +121,44 @@
     .bad {
       color: #c62828;
     }
-    .tagline {
-      font-size: 14px;
-      color: #7e57c2;
-      margin-bottom: 6px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      font-size: 12px;
-      border-radius: 999px;
-      background: #e3f2fd;
-      color: #1976d2;
-      margin-bottom: 6px;
-    }
     .choices {
       margin: 8px 0;
     }
     .choice-btn {
       background: #fff3e0;
       color: #ef6c00;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 2px solid #ffb74d;
       margin: 4px;
       padding: 6px 10px;
       font-size: 16px;
+      cursor: pointer;
     }
     .small-number-line {
-      margin-top: 8px;
-      font-size: 18px;
+      margin-top: 6px;
+      font-size: 16px;
+      color: #546e7a;
+    }
+    .card-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .card {
+      width: 70px;
+      height: 70px;
+      border-radius: 14px;
+      border: 2px solid #ce93d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f3e5f5;
+      cursor: pointer;
+    }
+    .card span {
+      font-size: 26px;
+      color: #6a1b9a;
     }
   </style>
 </head>
@@ -146,346 +172,412 @@
   </div>
 
   <script>
-  const numberWords = [
-    "", "one","two","three","four",
-    "five","six","seven","eight","nine","ten"
-  ];
+    // Words for numbers 1–10
+    const numberWords = [
+      "", "one","two","three","four",
+      "five","six","seven","eight","nine","ten"
+    ];
 
-  // Core number pages 1–10
-  const numberPages = Array.from({ length: 10 }, (_, i) => {
-    const n = i + 1;
-    return { type: "number", n };
-  });
+    // 1) Number pages 1–10
+    const numberPages = Array.from({ length: 10 }, (_, i) => {
+      const n = i + 1;
+      return { type: "number", n };
+    });
 
-  // Missing-number sequences with clear patterns like 3 __ 7 [web:49][web:54]
-  const missingPages = [
-    { sequence: [1, 2, null, 4, 5], answers: [3] },          // 1,2,__ ,4,5
-    { sequence: [null, 2, 3, 4], answers: [1] },             // __ ,2,3,4
-    { sequence: [3, null, 7], answers: [5] },                // 3,__ ,7
-    { sequence: [6, 7, null, 9, 10], answers: [8] },         // 6,7,__ ,9,10
-    { sequence: [3, null, 5, null, 7], answers: [4, 6] }     // 3,__ ,5,__ ,7
-  ];
+    // 2) Missing-number sequences for kids to see + say out loud [web:62][web:69]
+    // Simple 1–10 patterns like: 1, 2, __, 4   | 3, __, 5, __, 7   | 6, 7, __, 9, 10
+    const missingPages = [
+      { sequence: [1, 2, null, 4], answers: [3] },               // 1, 2, __, 4
+      { sequence: [3, null, 5], answers: [4] },                  // 3, __, 5
+      { sequence: [3, null, 7], answers: [5] },                  // 3, __, 7
+      { sequence: [6, 7, null, 9, 10], answers: [8] },           // 6, 7, __, 9, 10
+      { sequence: [2, null, 6, null, 10], answers: [4, 8] }      // 2, __, 6, __, 10
+    ];
 
-  // Before / After / Between [web:51][web:57]
-  const relationPages = [
-    { mode: "before", shown: 5, answer: 4 },
-    { mode: "after",  shown: 7, answer: 8 },
-    { mode: "between", left: 4, right: 6, answer: 5 }
-  ];
+    // 3) Before / After / Between (with number line as visual support)
+    const relationPages = [
+      { mode: "before", shown: 5, answer: 4 },
+      { mode: "after", shown: 7, answer: 8 },
+      { mode: "between", left: 4, right: 6, answer: 5 }
+    ];
 
-  // Extra activities:
-  // 1) Match number to quantity (multiple choice) [web:53]
-  // 2) Quick quiz: choose the next number
-  // 3) NEW: Finish the sequence (simple pattern) [web:47][web:55]
-  const extraPages = [
-    { type: "match", number: 4, options: [2,4,6] },
-    { type: "nextNumber", start: 3, options: [2,4,5] },
-    {
-      type: "finishSequence",
-      pattern: [1, 2, 3],             // shows "1 , 2 , 3 , __"
-      correctNext: 4,
-      choices: [4, 5, 6]
-    }
-  ];
+    // 4) Extra interactive activities:
+    // - Match number to dots (multiple choice)
+    // - Next number quiz
+    // - Finish the sequence (pattern)
+    // - NEW: Pick the card that has the right missing number
+    const extraPages = [
+      {
+        type: "match",
+        number: 4,
+        options: [2, 4, 6]
+      },
+      {
+        type: "nextNumber",
+        start: 3,
+        options: [2, 4, 5]
+      },
+      {
+        type: "finishSequence",
+        pattern: [1, 2, 3],
+        correctNext: 4,
+        choices: [4, 5, 6]
+      },
+      {
+        type: "cardPick",
+        displaySequence: [5, null, 7],
+        correct: 6,
+        cardOptions: [4, 6, 8]
+      }
+    ];
 
-  const pages = [];
+    // Build final ordered pages (no blanks)
+    const pages = [];
 
-  // Intro
-  pages.push({ type: "title" });
+    // Intro
+    pages.push({ type: "title" });
 
-  // Number pages
-  numberPages.forEach(pages.push, pages);
+    // Number pages
+    numberPages.forEach(p => pages.push(p));
 
-  // Section: Missing Numbers
-  pages.push({ type: "sectionHeader", title: "Fill in the Missing Numbers!" });
-  missingPages.forEach((item, index) => {
-    pages.push({ type: "missing", data: item, id: "missing_" + index });
-  });
+    // Section: Missing numbers
+    pages.push({ type: "sectionHeader", title: "Missing Numbers" });
+    missingPages.forEach((item, index) => {
+      pages.push({ type: "missing", data: item, id: "missing_" + index });
+    });
 
-  // Section: Before / After / Between
-  pages.push({ type: "sectionHeader", title: "Before, After & Between" });
-  relationPages.forEach((item, index) => {
-    pages.push({ type: "relation", data: item, id: "relation_" + index });
-  });
+    // Section: Before / After / Between
+    pages.push({ type: "sectionHeader", title: "Before, After & Between" });
+    relationPages.forEach((item, index) => {
+      pages.push({ type: "relation", data: item, id: "relation_" + index });
+    });
 
-  // Section: Fun Number Games
-  pages.push({ type: "sectionHeader", title: "Fun Number Games" });
-  extraPages.forEach((item, index) => {
-    pages.push({ type: item.type, data: item, id: "extra_" + index });
-  });
+    // Section: Fun Number Games
+    pages.push({ type: "sectionHeader", title: "Fun Number Games" });
+    extraPages.forEach((item, index) => {
+      pages.push({ type: item.type, data: item, id: "extra_" + index });
+    });
 
-  // Celebration page
-  pages.push({ type: "finish" });
+    // Finish page
+    pages.push({ type: "finish" });
 
-  let currentPage = 0;
+    let currentPage = 0;
 
-  const pageDiv = document.getElementById("page");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
+    const pageDiv = document.getElementById("page");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
-  function renderPage() {
-    const p = pages[currentPage];
-    pageDiv.innerHTML = "";
-    let html = "";
+    function renderPage() {
+      const p = pages[currentPage];
+      let html = "";
 
-    if (p.type === "title") {
-      html += `
-        <h1>My Number Book</h1>
-        <div class="tagline">Learning numbers 1 to 10</div>
-        <p>Tap <b>Next</b> to start your adventure!</p>
-      `;
-    }
-
-    if (p.type === "number") {
-      const n = p.n;
-      html += `
-        <div class="pill">Number Page</div>
-        <h2>This is number</h2>
-        <div class="big-number">${n}</div>
-        <div class="word">${numberWords[n]}</div>
-        <div class="dots">
-          ${"<span class='dot'></span>".repeat(n)}
-        </div>
-        <p>Trace, count, and say the number out loud!</p>
-      `;
-    }
-
-    if (p.type === "sectionHeader") {
-      html += `
-        <h1>${p.title}</h1>
-        <p class="tagline">Let’s play with numbers!</p>
-      `;
-    }
-
-    if (p.type === "missing") {
-      const seq = p.data.sequence;
-      const id = p.id;
-      html += `
-        <div class="pill">Missing Number</div>
-        <h2>Fill in the missing number</h2>
-        <div class="sequence-row">
-      `;
-      seq.forEach((num, i) => {
-        if (num === null) {
-          html += `<input class="num-input" maxlength="2" id="${id}_i${i}" />`;
-        } else {
-          html += `<span>${num}</span>`;
-        }
-        if (i < seq.length - 1) html += " , ";
-      });
-      html += `
-        </div>
-        <button onclick="checkMissing('${id}')">Check</button>
-        <div id="${id}_feedback" class="feedback"></div>
-      `;
-    }
-
-    if (p.type === "relation") {
-      const d = p.data;
-      const id = p.id;
-      let prompt = "";
-      let sequenceHtml = "";
-
-      if (d.mode === "before") {
-        prompt = "What number comes before?";
-        sequenceHtml = `<input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.shown}</span>`;
-      } else if (d.mode === "after") {
-        prompt = "What number comes after?";
-        sequenceHtml = `<span>${d.shown}</span> , <input class="num-input" id="${id}_in" maxlength="2" />`;
-      } else {
-        prompt = "What number goes between?";
-        sequenceHtml = `<span>${d.left}</span> , <input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.right}</span>`;
+      if (p.type === "title") {
+        html += `
+          <h1>My Number Adventure</h1>
+          <div class="tagline">Count, say, and play with numbers 1–10</div>
+          <p>Tap <b>Next</b> to begin!</p>
+        `;
       }
 
-      html += `
-        <div class="pill">${d.mode[0].toUpperCase() + d.mode.slice(1)}</div>
-        <h2>${prompt}</h2>
-        <div class="sequence-row">${sequenceHtml}</div>
-        <div class="small-number-line">1 2 3 4 5 6 7 8 9 10</div>
-        <button onclick="checkRelation('${id}')">Check</button>
-        <div id="${id}_feedback" class="feedback"></div>
-      `;
+      if (p.type === "number") {
+        const n = p.n;
+        html += `
+          <div class="pill">Number ${n}</div>
+          <h2>This is number</h2>
+          <div class="big-number">${n}</div>
+          <div class="word">${numberWords[n]}</div>
+          <div class="dots">
+            ${"<span class='dot'></span>".repeat(n)}
+          </div>
+          <p>Say the number out loud, then count the dots together.</p>
+        `;
+      }
+
+      if (p.type === "sectionHeader") {
+        html += `
+          <h1>${p.title}</h1>
+          <p class="tagline">Get ready for a new kind of number game!</p>
+        `;
+      }
+
+      if (p.type === "missing") {
+        const seq = p.data.sequence;
+        const id = p.id;
+        html += `
+          <div class="pill">Missing Number</div>
+          <h2>Say the numbers out loud, then fill the box.</h2>
+          <div class="sequence-row">
+        `;
+        seq.forEach((num, i) => {
+          if (num === null) {
+            html += `<input class="num-input" maxlength="2" id="${id}_i${i}" />`;
+          } else {
+            html += `<span>${num}</span>`;
+          }
+          if (i < seq.length - 1) html += " , ";
+        });
+        html += `
+          </div>
+          <p>Hint: Count in order and listen for the number that is missing.</p>
+          <button onclick="checkMissing('${id}')">Check</button>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "relation") {
+        const d = p.data;
+        const id = p.id;
+        let prompt = "";
+        let sequenceHtml = "";
+
+        if (d.mode === "before") {
+          prompt = "What number comes before?";
+          sequenceHtml = `<input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.shown}</span>`;
+        } else if (d.mode === "after") {
+          prompt = "What number comes after?";
+          sequenceHtml = `<span>${d.shown}</span> , <input class="num-input" id="${id}_in" maxlength="2" />`;
+        } else {
+          prompt = "What number goes between?";
+          sequenceHtml = `<span>${d.left}</span> , <input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.right}</span>`;
+        }
+
+        html += `
+          <div class="pill">${d.mode[0].toUpperCase() + d.mode.slice(1)}</div>
+          <h2>${prompt}</h2>
+          <div class="sequence-row">${sequenceHtml}</div>
+          <div class="small-number-line">1 2 3 4 5 6 7 8 9 10</div>
+          <p>Point to the numbers on the line and say them in order.</p>
+          <button onclick="checkRelation('${id}')">Check</button>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "match") {
+        const d = p.data;
+        const id = p.id;
+        html += `
+          <div class="pill">Match</div>
+          <h2>Which number matches these dots?</h2>
+          <div class="dots">
+            ${"<span class='dot'></span>".repeat(d.number)}
+          </div>
+          <p>Count the dots out loud. Then choose the right number.</p>
+          <div class="choices">
+            ${d.options.map(o => `
+              <button class="choice-btn" onclick="checkChoice('${id}', ${o})">${o}</button>
+            `).join("")}
+          </div>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "nextNumber") {
+        const d = p.data;
+        const id = p.id;
+        html += `
+          <div class="pill">Next Number</div>
+          <h2>What comes after ${d.start}?</h2>
+          <div class="sequence-row">${d.start} , ?</div>
+          <p>Start at ${d.start} and count on together.</p>
+          <div class="choices">
+            ${d.options.map(o => `
+              <button class="choice-btn" onclick="checkNext('${id}', ${o})">${o}</button>
+            `).join("")}
+          </div>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "finishSequence") {
+        const d = p.data;
+        const id = p.id;
+        html += `
+          <div class="pill">Finish the Sequence</div>
+          <h2>What comes next?</h2>
+          <div class="sequence-row">
+            ${d.pattern.join(" , ")} , __
+          </div>
+          <p>Say the pattern together: ${d.pattern.join(", ")} ...?</p>
+          <div class="choices">
+            ${d.choices.map(o => `
+              <button class="choice-btn" onclick="checkFinish('${id}', ${o})">${o}</button>
+            `).join("")}
+          </div>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "cardPick") {
+        const d = p.data;
+        const id = p.id;
+        const seq = d.displaySequence;
+        html += `
+          <div class="pill">Number Cards</div>
+          <h2>Pick the missing number card</h2>
+          <div class="sequence-row">
+        `;
+        seq.forEach((num, i) => {
+          if (num === null) {
+            html += `<span>__</span>`;
+          } else {
+            html += `<span>${num}</span>`;
+          }
+          if (i < seq.length - 1) html += " , ";
+        });
+        html += `
+          </div>
+          <p>Say the numbers you see, then choose the card that fits.</p>
+          <div class="card-row">
+            ${d.cardOptions.map(o => `
+              <div class="card" onclick="checkCard('${id}', ${o})">
+                <span>${o}</span>
+              </div>
+            `).join("")}
+          </div>
+          <div id="${id}_feedback" class="feedback"></div>
+        `;
+      }
+
+      if (p.type === "finish") {
+        html += `
+          <h1>Yay! You did it!</h1>
+          <p class="tagline">You counted, found missing numbers, and played games.</p>
+          <p>Go back to your favourite page and play again.</p>
+        `;
+      }
+
+      pageDiv.innerHTML = html;
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === pages.length - 1;
     }
 
-    if (p.type === "match") {
-      const d = p.data;
-      const id = p.id;
-      html += `
-        <div class="pill">Match</div>
-        <h2>Which card shows ${d.number}?</h2>
-        <div class="dots">
-          ${"<span class='dot'></span>".repeat(d.number)}
-        </div>
-        <div class="choices">
-          ${d.options.map(o => `
-            <button class="choice-btn" onclick="checkChoice('${id}', ${o})">${o}</button>
-          `).join("")}
-        </div>
-        <div id="${id}_feedback" class="feedback"></div>
-      `;
-    }
+    // CHECK FUNCTIONS
 
-    if (p.type === "nextNumber") {
-      const d = p.data;
-      const id = p.id;
-      html += `
-        <div class="pill">Next Number</div>
-        <h2>What comes after ${d.start}?</h2>
-        <div class="sequence-row">${d.start} , ?</div>
-        <div class="choices">
-          ${d.options.map(o => `
-            <button class="choice-btn" onclick="checkNext('${id}', ${o})">${o}</button>
-          `).join("")}
-        </div>
-        <div id="${id}_feedback" class="feedback"></div>
-      `;
-    }
+    window.checkMissing = function(id) {
+      const page = pages.find(p => p.id === id);
+      const data = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+      const seq = data.sequence;
+      const expectedAnswers = data.answers;
 
-    if (p.type === "finishSequence") {
-      const d = p.data;
-      const id = p.id;
-      html += `
-        <div class="pill">Finish the Sequence</div>
-        <h2>What comes next?</h2>
-        <div class="sequence-row">
-          ${d.pattern.join(" , ")} , __
-        </div>
-        <div class="choices">
-          ${d.choices.map(o => `
-            <button class="choice-btn" onclick="checkFinish('${id}', ${o})">${o}</button>
-          `).join("")}
-        </div>
-        <div id="${id}_feedback" class="feedback"></div>
-      `;
-    }
+      const inputs = [];
+      seq.forEach((num, i) => {
+        if (num === null) {
+          const el = document.getElementById(id + "_i" + i);
+          if (el) inputs.push(parseInt(el.value, 10));
+        }
+      });
 
-    if (p.type === "finish") {
-      html += `
-        <h1>Yay! You did it!</h1>
-        <p class="tagline">You counted, filled in blanks, and played games.</p>
-        <p>Tap <b>Back</b> to play again or try your favourite page.</p>
-      `;
-    }
+      let correct = true;
+      if (inputs.length !== expectedAnswers.length) {
+        correct = false;
+      } else {
+        for (let i = 0; i < inputs.length; i++) {
+          if (inputs[i] !== expectedAnswers[i]) {
+            correct = false;
+            break;
+          }
+        }
+      }
 
-    pageDiv.innerHTML = html;
-    prevBtn.disabled = currentPage === 0;
-    nextBtn.disabled = currentPage === pages.length - 1;
-  }
+      if (correct) {
+        feedback.textContent = "Great job! You found the missing number!";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Try again. Count the numbers out loud and listen for the missing one.";
+        feedback.className = "feedback bad";
+      }
+    };
 
-  // --- CHECK FUNCTIONS ---
+    window.checkRelation = function(id) {
+      const page = pages.find(p => p.id === id);
+      const d = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+      const input = document.getElementById(id + "_in");
+      const val = parseInt(input.value, 10);
 
-  window.checkMissing = function(id) {
-    const page = pages.find(p => p.id === id);
-    const data = page.data;
-    const feedback = document.getElementById(id + "_feedback");
-    const seq = data.sequence;
-    const expectedAnswers = data.answers;
+      if (val === d.answer) {
+        feedback.textContent = "Yes! That number fits perfectly.";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Not quite. Point and count on the number line, then try again.";
+        feedback.className = "feedback bad";
+      }
+    };
 
-    const inputs = [];
-    seq.forEach((num, i) => {
-      if (num === null) {
-        const el = document.getElementById(id + "_i" + i);
-        if (el) inputs.push(parseInt(el.value, 10));
+    window.checkChoice = function(id, choice) {
+      const page = pages.find(p => p.id === id);
+      const d = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+
+      if (choice === d.number) {
+        feedback.textContent = "You matched the dots and the number!";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Oops! Count the dots one more time.";
+        feedback.className = "feedback bad";
+      }
+    };
+
+    window.checkNext = function(id, choice) {
+      const page = pages.find(p => p.id === id);
+      const d = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+
+      if (choice === d.start + 1) {
+        feedback.textContent = "Yes! That’s the next number.";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Try again. Say the numbers in order: " + d.start + ", ...";
+        feedback.className = "feedback bad";
+      }
+    };
+
+    window.checkFinish = function(id, choice) {
+      const page = pages.find(p => p.id === id);
+      const d = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+
+      if (choice === d.correctNext) {
+        feedback.textContent = "Nice! You finished the sequence!";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Say the pattern again and see what comes next.";
+        feedback.className = "feedback bad";
+      }
+    };
+
+    window.checkCard = function(id, choice) {
+      const page = pages.find(p => p.id === id);
+      const d = page.data;
+      const feedback = document.getElementById(id + "_feedback");
+
+      if (choice === d.correct) {
+        feedback.textContent = "Perfect pick! That card completes the sequence.";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = "Look at the numbers and think: which one belongs in the space?";
+        feedback.className = "feedback bad";
+      }
+    };
+
+    // NAVIGATION
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
       }
     });
 
-    let correct = true;
-    if (inputs.length !== expectedAnswers.length) {
-      correct = false;
-    } else {
-      for (let i = 0; i < inputs.length; i++) {
-        if (inputs[i] !== expectedAnswers[i]) {
-          correct = false;
-          break;
-        }
+    nextBtn.addEventListener("click", () => {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        renderPage();
       }
-    }
+    });
 
-    if (correct) {
-      feedback.textContent = "Great job! That’s the missing number!";
-      feedback.className = "feedback good";
-    } else {
-      feedback.textContent = "Try again. Count carefully and fill the box.";
-      feedback.className = "feedback bad";
-    }
-  };
-
-  window.checkRelation = function(id) {
-    const page = pages.find(p => p.id === id);
-    const d = page.data;
-    const feedback = document.getElementById(id + "_feedback");
-    const input = document.getElementById(id + "_in");
-    const val = parseInt(input.value, 10);
-
-    if (val === d.answer) {
-      feedback.textContent = "Yes! That number is just right.";
-      feedback.className = "feedback good";
-    } else {
-      feedback.textContent = "Not quite. Look at the number line and try again.";
-      feedback.className = "feedback bad";
-    }
-  };
-
-  window.checkChoice = function(id, choice) {
-    const page = pages.find(p => p.id === id);
-    const d = page.data;
-    const feedback = document.getElementById(id + "_feedback");
-
-    if (choice === d.number) {
-      feedback.textContent = "You matched it perfectly!";
-      feedback.className = "feedback good";
-    } else {
-      feedback.textContent = "Oops, count the dots again.";
-      feedback.className = "feedback bad";
-    }
-  };
-
-  window.checkNext = function(id, choice) {
-    const page = pages.find(p => p.id === id);
-    const d = page.data;
-    const feedback = document.getElementById(id + "_feedback");
-
-    if (choice === d.start + 1) {
-      feedback.textContent = "Yes! That’s the next number.";
-      feedback.className = "feedback good";
-    } else {
-      feedback.textContent = "Try again. Count on from the first number.";
-      feedback.className = "feedback bad";
-    }
-  };
-
-  window.checkFinish = function(id, choice) {
-    const page = pages.find(p => p.id === id);
-    const d = page.data;
-    const feedback = document.getElementById(id + "_feedback");
-
-    if (choice === d.correctNext) {
-      feedback.textContent = "Nice! You finished the sequence!";
-      feedback.className = "feedback good";
-    } else {
-      feedback.textContent = "Have another go. Say the numbers out loud and see what comes next.";
-      feedback.className = "feedback bad";
-    }
-  };
-
-  // --- NAVIGATION ---
-  prevBtn.addEventListener("click", () => {
-    if (currentPage > 0) {
-      currentPage--;
-      renderPage();
-    }
-  });
-
-  nextBtn.addEventListener("click", () => {
-    if (currentPage < pages.length - 1) {
-      currentPage++;
-      renderPage();
-    }
-  });
-
-  renderPage();
-</script>
-;
-
+    // First render
+    renderPage();
+  </script>
 </body>
 </html>
