@@ -186,7 +186,6 @@
       font-size: 15px;
       margin-bottom: 4px;
     }
-    /* Number line: grid (1–10 or scrambled 1–10) */
     .number-line {
       display: grid;
       grid-template-columns: repeat(10, minmax(0, 1fr));
@@ -223,13 +222,6 @@
     .number-bubble.eliminated {
       opacity: 0.25;
     }
-    .number-bubble.disabled {
-      cursor: default;
-      background: #eeeeee;
-      border-color: #bdbdbd;
-      color: #9e9e9e;
-      box-shadow: none;
-    }
     .guess-step-buttons {
       margin-top: 8px;
     }
@@ -256,9 +248,47 @@
     .scramble-toggle label {
       cursor: pointer;
     }
+    .stats {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #37474f;
+    }
+    .present-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .present-content {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px 24px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .present-emoji {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
+  <!-- Present popup -->
+  <div id="presentModal" class="present-modal">
+    <div class="present-content">
+      <div class="present-emoji">🎁</div>
+      <h2>Wow! 5 Wins!</h2>
+      <p>You unlocked a special present! Keep playing to get more!</p>
+      <button onclick="closePresentPopup()">Close</button>
+    </div>
+  </div>
+
   <!-- Sounds -->
   <audio id="soundClick" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
   <audio id="soundError" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
@@ -281,7 +311,19 @@
       el.play().catch(() => {});
     }
 
-    // Fisher-Yates shuffle [web:116][web:122]
+    function showPresentPopup() {
+      const modal = document.getElementById("presentModal");
+      if (!modal) return;
+      modal.style.display = "flex";
+    }
+
+    window.closePresentPopup = function() {
+      const modal = document.getElementById("presentModal");
+      if (!modal) return;
+      modal.style.display = "none";
+    };
+
+    // Fisher-Yates shuffle
     function shuffleArray(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
@@ -291,8 +333,20 @@
       return a;
     }
 
-    // Global scramble state for activities (1–10)
+    // Global scramble and stats
     let scrambleActivities = false;
+    let totalGuesses = 0;
+    let totalWins = 0;
+
+    function updateStatsDisplay() {
+      const statsEls = document.querySelectorAll(".stats");
+      statsEls.forEach(el => {
+        el.textContent = `Guesses: ${totalGuesses} | Wins: ${totalWins}`;
+      });
+      if (totalWins > 0 && totalWins % 5 === 0) {
+        showPresentPopup();
+      }
+    }
 
     // Words for numbers 1–10
     const numberWords = [
@@ -315,7 +369,7 @@
       { sequence: [2, null, 6, null, 10], answers: [4, 8] }
     ];
 
-    // Before / After / Between [web:57][web:124]
+    // Before / After / Between
     const relationPages = [
       { mode: "before", shown: 5, answer: 4 },
       { mode: "after", shown: 7, answer: 8 },
@@ -348,7 +402,7 @@
       }
     ];
 
-    // Guess My Number (0–20) with step controls from 0 [web:111][web:118]
+    // Guess My Number (1–20) – internal logic can think from 0, but buttons show 1–20
     const guessMin = 0;
     const guessMax = 20;
     let guessStep = 1;        // 1s, 2s, 3s
@@ -384,7 +438,7 @@
       pages.push({ type: item.type, data: item, id: "extra_" + index });
     });
 
-    pages.push({ type: "sectionHeader", title: "Guess My Number (0–20)" });
+    pages.push({ type: "sectionHeader", title: "Guess My Number (1–20)" });
     pages.push({ type: "guessNumber", id: "guess_1" });
 
     pages.push({ type: "finish" });
@@ -450,7 +504,7 @@
             </button>
             <button class="home-btn" onclick="goToSection('guess')">
               <b>Guess My Number</b>
-              0–20 higher / lower
+              1–20 higher / lower
             </button>
           </div>
         `;
@@ -469,6 +523,7 @@
           <p>Say the number out loud, then count the dots together.</p>
           <p>Tap a number on the line that matches this page.</p>
           ${renderActivityNumberLine()}
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -477,6 +532,7 @@
           <h1>${p.title}</h1>
           <p class="tagline">Get ready for a new kind of number game!</p>
           ${p.title.startsWith("Guess My Number") ? "" : renderActivityNumberLine()}
+          ${p.title.startsWith("Guess My Number") ? "" : `<div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>`}
         `;
       }
 
@@ -503,6 +559,7 @@
           <p>Hint: Count in order and listen for the number that is missing.</p>
           <button onclick="checkMissing('${id}')">Check</button>
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -531,6 +588,7 @@
           ${renderActivityNumberLine()}
           <button onclick="checkRelation('${id}')">Check</button>
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -552,6 +610,7 @@
           <p>Tap the matching number on the line too.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -571,6 +630,7 @@
           <p>Find ${d.start + 1} on the number line.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -592,6 +652,7 @@
           <p>Tap the number on the line that you think comes next.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -625,6 +686,7 @@
           <p>Tap the same number on the number line.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -632,34 +694,35 @@
         if (secretNumber === null) {
           resetGuessGame();
         }
+        // buttons 1–20, but skip logic still uses 0 internally
         const numbers = [];
-        for (let n = guessMin; n <= guessMax; n += guessStep) {
+        for (let n = 1; n <= guessMax; n += guessStep) {
           numbers.push(n);
         }
         html += `
           <div class="pill">Guess My Number</div>
-          <h2>I’m thinking of a number between ${guessMin} and ${guessMax}</h2>
-          <p>Tap a number (not 0). I’ll tell you if my secret number is higher or lower.</p>
+          <h2>I’m thinking of a number between 1 and ${guessMax}</h2>
+          <p>Tap a number. I’ll tell you if my secret number is higher or lower.</p>
           <div class="guess-step-buttons">
-            <button class="step-btn ${guessStep === 1 ? 'active' : ''}" onclick="setGuessStep(1)">Count by 1s (0,1,2…)</button>
-            <button class="step-btn ${guessStep === 2 ? 'active' : ''}" onclick="setGuessStep(2)">Count by 2s (0,2,4…)</button>
-            <button class="step-btn ${guessStep === 3 ? 'active' : ''}" onclick="setGuessStep(3)">Count by 3s (0,3,6…)</button>
+            <button class="step-btn ${guessStep === 1 ? 'active' : ''}" onclick="setGuessStep(1)">Count by 1s (1,2,3…)</button>
+            <button class="step-btn ${guessStep === 2 ? 'active' : ''}" onclick="setGuessStep(2)">Count by 2s (2,4,6…)</button>
+            <button class="step-btn ${guessStep === 3 ? 'active' : ''}" onclick="setGuessStep(3)">Count by 3s (3,6,9…)</button>
           </div>
           <div class="number-line">
             ${numbers.map(num => {
               const extraClass = eliminated[num] ? " eliminated" : "";
-              const disabledClass = num === 0 ? " disabled" : "";
               return `
                 <div
-                  class="number-bubble${extraClass}${disabledClass}"
+                  class="number-bubble${extraClass}"
                   data-num="${num}"
-                  ${num === 0 ? "" : `onclick="clickGuessBubble(${num})"`}
+                  onclick="clickGuessBubble(${num})"
                 >${num}</div>
               `;
             }).join("")}
           </div>
           <div id="guessFeedback" class="feedback">${guessMessage}</div>
           <button onclick="resetGuessAndRender()">New Secret Number</button>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -668,6 +731,7 @@
           <h1>Yay! You did it!</h1>
           <p class="tagline">You counted, found missing numbers, played games, and guessed numbers to 20.</p>
           <p>Tap <b>Home</b> to pick another game.</p>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
         `;
       }
 
@@ -679,9 +743,6 @@
           if (el) el.classList.add("eliminated");
         });
       }
-
-      prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = currentPage === pages.length - 1;
     }
 
     // Toggle scramble for activity number lines
@@ -718,7 +779,7 @@
       }
     };
 
-    // Check functions with sounds (game feedback only)
+    // Check functions with stats + sounds
     window.checkMissing = function(id) {
       const page = pages.find(p => p.id === id);
       const data = page.data;
@@ -746,7 +807,9 @@
         }
       }
 
+      totalGuesses++;
       if (correct) {
+        totalWins++;
         feedback.textContent = "Great job! You found the missing number!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -755,6 +818,7 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
     window.checkRelation = function(id) {
@@ -764,7 +828,9 @@
       const input = document.getElementById(id + "_in");
       const val = parseInt(input.value, 10);
 
+      totalGuesses++;
       if (val === d.answer) {
+        totalWins++;
         feedback.textContent = "Yes! That number fits perfectly.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -773,6 +839,7 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
     window.checkChoice = function(id, choice) {
@@ -780,7 +847,9 @@
       const d = page.data;
       const feedback = document.getElementById(id + "_feedback");
 
+      totalGuesses++;
       if (choice === d.number) {
+        totalWins++;
         feedback.textContent = "You matched the dots and the number!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -789,6 +858,7 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
     window.checkNext = function(id, choice) {
@@ -796,7 +866,9 @@
       const d = page.data;
       const feedback = document.getElementById(id + "_feedback");
 
+      totalGuesses++;
       if (choice === d.start + 1) {
+        totalWins++;
         feedback.textContent = "Yes! That’s the next number.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -805,6 +877,7 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
     window.checkFinish = function(id, choice) {
@@ -812,7 +885,9 @@
       const d = page.data;
       const feedback = document.getElementById(id + "_feedback");
 
+      totalGuesses++;
       if (choice === d.correctNext) {
+        totalWins++;
         feedback.textContent = "Nice! You finished the sequence!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -821,6 +896,7 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
     window.checkCard = function(id, choice) {
@@ -828,7 +904,9 @@
       const d = page.data;
       const feedback = document.getElementById(id + "_feedback");
 
+      totalGuesses++;
       if (choice === d.correct) {
+        totalWins++;
         feedback.textContent = "Perfect pick! That card completes the sequence.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
@@ -837,9 +915,10 @@
         feedback.className = "feedback bad";
         playSound("soundError");
       }
+      updateStatsDisplay();
     };
 
-    // Guess My Number – 0–20, steps from 0, 0 disabled for clicks
+    // Guess My Number – 1–20 visible, stats
     window.clickGuessBubble = function(num) {
       if (secretNumber === null) resetGuessGame();
       playSound("soundClick");
@@ -852,16 +931,19 @@
       bubble.classList.add("clicked");
 
       const feedback = document.getElementById("guessFeedback");
+      totalGuesses++;
+
       if (num === secretNumber) {
         bubble.classList.add("correct");
         guessMessage = "You got it! My secret number was " + secretNumber + "!";
         feedback.className = "feedback good";
+        totalWins++;
         playSound("soundSuccess");
       } else if (num < secretNumber) {
         guessMessage = "Higher than " + num + ". Tap a bigger number.";
         feedback.className = "feedback bad";
         playSound("soundError");
-        for (let i = guessMin; i <= num; i++) eliminated[i] = true;
+        for (let i = 1; i <= num; i++) eliminated[i] = true;
       } else {
         guessMessage = "Lower than " + num + ". Tap a smaller number.";
         feedback.className = "feedback bad";
@@ -874,6 +956,7 @@
         const el = document.querySelector('.number-bubble[data-num="' + n + '"]');
         if (el) el.classList.add("eliminated");
       });
+      updateStatsDisplay();
     };
 
     window.resetGuessAndRender = function() {
