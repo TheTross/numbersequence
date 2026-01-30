@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Sequence Booklet for Kindergarten</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .booklet-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .page {
+            display: none;
+            padding: 40px 30px;
+            text-align: center;
+            min-height: 500px;
+            background: white;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .number-display {
+            font-size: 6em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .number-word {
+            font-size: 2em;
+            color: #764ba2;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            min-height: 80px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 35px;
+            height: 35px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 3px 8px rgba(255, 215, 0, 0.4);
+            border: 2px solid #FFA500;
+        }
+
+        .sequence-check {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .sequence-box {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .seq-num {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: #F0F0F0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .seq-num:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .seq-num.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: #F5F5F5;
+            border-top: 2px solid #DDD;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #CCC;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-counter {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .page-counter span {
+            color: #667eea;
+        }
+
+        .completion-message {
+            font-size: 2em;
+            color: #4CAF50;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(76, 175, 80, 0.2);
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin: 15px 0;
+        }
+
+        .instructions {
+            font-size: 0.95em;
+            color: #666;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .page {
+                padding: 30px 20px;
+                min-height: 400px;
+            }
+
+            .number-display {
+                font-size: 5em;
+            }
+
+            .number-word {
+                font-size: 1.5em;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .dot {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="booklet-container">
+        <div class="header">
+            <h1>🎨 Number Sequence Booklet 🎨</h1>
+            <p>Learn numbers 1 through 10!</p>
+        </div>
+
+        <!-- Page 1: Number 1 -->
+        <div class="page active">
+            <div class="number-display">1</div>
+            <div class="number-word">One</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 2: Number 2 -->
+        <div class="page">
+            <div class="number-display">2</div>
+            <div class="number-word">Two</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 3: Number 3 -->
+        <div class="page">
+            <div class="number-display">3</div>
+            <div class="number-word">Three</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 4: Number 4 -->
+        <div class="page">
+            <div class="number-display">4</div>
+            <div class="number-word">Four</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 5: Number 5 -->
+        <div class="page">
+            <div class="number-display">5</div>
+            <div class="number-word">Five</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 6: Number 6 -->
+        <div class="page">
+            <div class="number-display">6</div>
+            <div class="number-word">Six</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 7: Number 7 -->
+        <div class="page">
+            <div class="number-display">7</div>
+            <div class="number-word">Seven</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 8: Number 8 -->
+        <div class="page">
+            <div class="number-display">8</div>
+            <div class="number-word">Eight</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 9: Number 9 -->
+        <div class="page">
+            <div class="number-display">9</div>
+            <div class="number-word">Nine</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 10: Number 10 -->
+        <div class="page">
+            <div class="number-display">10</div>
+            <div class="number-word">Ten</div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="instructions">Count the yellow dots!</div>
+        </div>
+
+        <!-- Page 11: Sequence Challenge -->
+        <div class="page">
+            <div class="emoji">🎉</div>
+            <div class="number-word">Number Sequence Challenge</div>
+            <div class="instructions">Click the numbers in order from 1 to 10!</div>
+            <div class="sequence-box">
+                <div class="seq-num" data-number="1">1</div>
+                <div class="seq-num" data-number="3">3</div>
+                <div class="seq-num" data-number="2">2</div>
+                <div class="seq-num" data-number="5">5</div>
+                <div class="seq-num" data-number="4">4</div>
+            </div>
+            <div class="sequence-box">
+                <div class="seq-num" data-number="6">6</div>
+                <div class="seq-num" data-number="8">8</div>
+                <div class="seq-num" data-number="7">7</div>
+                <div class="seq-num" data-number="10">10</div>
+                <div class="seq-num" data-number="9">9</div>
+            </div>
+            <div class="sequence-check" id="sequenceCheck"></div>
+        </div>
+
+        <!-- Page 12: Completion -->
+        <div class="page">
+            <div class="emoji">⭐ ✨ 🌟</div>
+            <div class="completion-message">Great Job!</div>
+            <div class="number-word">You completed the booklet!</div>
+            <div class="instructions">You&rsquo;ve learned numbers 1 through 10!<br>Now you&rsquo;re ready to count amazing things!</div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="changePage(-1)">← Back</button>
+            <span class="page-counter">Page <span id="pageNum">1</span> of <span id="pageTotal">12</span></span>
+            <button id="nextBtn" onclick="changePage(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        let nextExpectedNumber = 1;
+        const pages = document.querySelectorAll('.page');
+        const totalPages = pages.length;
+
+        document.getElementById('pageTotal').textContent = totalPages;
+
+        function showPage(n) {
+            pages[currentPage].classList.remove('active');
+            currentPage = (n + totalPages) % totalPages;
+            pages[currentPage].classList.add('active');
+            
+            document.getElementById('pageNum').textContent = currentPage + 1;
+
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+        }
+
+        function changePage(direction) {
+            showPage(currentPage + direction);
+        }
+
+        // Sequence challenge logic
+        document.querySelectorAll('.seq-num').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const number = parseInt(this.getAttribute('data-number'));
+                
+                if (number === nextExpectedNumber) {
+                    this.classList.add('correct');
+                    this.style.pointerEvents = 'none';
+                    nextExpectedNumber++;
+
+                    if (nextExpectedNumber === 11) {
+                        document.getElementById('sequenceCheck').textContent = '✨ Perfect! You did it! ✨';
+                        document.getElementById('sequenceCheck').style.color = '#4CAF50';
+                    }
+                } else {
+                    document.getElementById('sequenceCheck').textContent = '❌ Try again! You&rsquo;re looking for ' + nextExpectedNumber;
+                    document.getElementById('sequenceCheck').style.color = '#FF6B6B';
+                }
+            });
+        });
+
+        // Initialize
+        showPage(0);
+    </script>
+</body>
+</html>
