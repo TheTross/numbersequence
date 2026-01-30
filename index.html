@@ -2,33 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Kindergarten Number Booklet</title>
+  <title>Kindergarten Number Adventure</title>
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #ffe0f7, #e3f2fd);
       display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    .app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .book {
-      width: 380px;
-      max-width: 92vw;
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
-      padding: 18px 20px 22px;
+      padding: 16px;
       text-align: center;
     }
     h1 {
-      font-size: 24px;
+      font-size: 26px;
       margin: 4px 0 10px;
       color: #6a1b9a;
     }
     h2 {
-      font-size: 20px;
+      font-size: 22px;
       margin: 8px 0;
       color: #3949ab;
     }
@@ -36,39 +43,41 @@
       margin: 4px 0;
     }
     .big-number {
-      font-size: 70px;
+      font-size: 80px;
       font-weight: bold;
       margin: 10px 0 4px;
       color: #ff7043;
       text-shadow: 0 3px 0 #ffccbc;
     }
     .word {
-      font-size: 20px;
+      font-size: 22px;
       margin-bottom: 10px;
       text-transform: capitalize;
       color: #5d4037;
     }
     .dots {
-      margin: 10px 0 4px;
+      margin: 10px 0 8px;
     }
     .dot {
       display: inline-block;
-      width: 18px;
-      height: 18px;
-      margin: 3px;
+      width: 20px;
+      height: 20px;
+      margin: 4px;
       border-radius: 50%;
       background: #ffca28;
     }
     .nav {
       display: flex;
       justify-content: space-between;
-      margin-top: 16px;
+      padding: 8px 16px 12px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
     }
     button {
       background: #42a5f5;
       color: #fff;
       border: none;
-      padding: 8px 14px;
+      padding: 10px 16px;
       border-radius: 999px;
       font-size: 14px;
       cursor: pointer;
@@ -79,35 +88,35 @@
     }
     .pill {
       display: inline-block;
-      padding: 3px 10px;
-      font-size: 12px;
+      padding: 4px 12px;
+      font-size: 13px;
       border-radius: 999px;
       background: #e3f2fd;
       color: #1976d2;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .tagline {
-      font-size: 14px;
+      font-size: 15px;
       color: #7e57c2;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .sequence-row {
-      font-size: 24px;
-      margin: 12px 0;
+      font-size: 28px;
+      margin: 14px 0;
     }
     .num-input {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       border: 2px solid #90a4ae;
       text-align: center;
-      font-size: 20px;
-      margin: 0 3px;
+      font-size: 22px;
+      margin: 0 4px;
     }
     .feedback {
-      min-height: 20px;
-      font-size: 14px;
-      margin-top: 6px;
+      min-height: 22px;
+      font-size: 15px;
+      margin-top: 8px;
     }
     .good {
       color: #2e7d32;
@@ -116,33 +125,33 @@
       color: #c62828;
     }
     .choices {
-      margin: 8px 0;
+      margin: 10px 0;
     }
     .choice-btn {
       background: #fff3e0;
       color: #ef6c00;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 2px solid #ffb74d;
       margin: 4px;
-      padding: 6px 10px;
-      font-size: 16px;
+      padding: 8px 12px;
+      font-size: 18px;
       cursor: pointer;
     }
     .small-number-line {
-      margin-top: 6px;
-      font-size: 16px;
+      margin-top: 8px;
+      font-size: 18px;
       color: #546e7a;
     }
     .card-row {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
+      margin-top: 12px;
     }
     .card {
-      width: 70px;
-      height: 70px;
-      border-radius: 14px;
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
       border: 2px solid #ce93d8;
       display: flex;
       align-items: center;
@@ -151,40 +160,76 @@
       cursor: pointer;
     }
     .card span {
-      font-size: 26px;
+      font-size: 30px;
       color: #6a1b9a;
     }
     .home-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-top: 16px;
+      width: 100%;
+      max-width: 480px;
     }
     .home-btn {
-      border-radius: 14px;
+      border-radius: 16px;
       border: 2px solid #bbdefb;
       background: #e3f2fd;
-      padding: 10px 6px;
-      font-size: 13px;
+      padding: 12px 6px;
+      font-size: 14px;
       color: #1e88e5;
       cursor: pointer;
     }
     .home-btn b {
       display: block;
-      font-size: 14px;
-      margin-bottom: 3px;
+      font-size: 15px;
+      margin-bottom: 4px;
     }
     .range-line {
-      margin-top: 6px;
+      margin-top: 10px;
       font-size: 18px;
       color: #37474f;
+    }
+    /* Full-width clickable number line 1–20 */
+    .number-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0 8px;
+    }
+    .number-bubble {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid #90a4ae;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .number-bubble.clicked {
+      border-color: #42a5f5;
+      background: #bbdefb;
+      transform: scale(1.1);
+    }
+    .number-bubble.correct {
+      border-color: #2e7d32;
+      background: #c8e6c9;
+    }
+    .number-bubble.eliminated {
+      opacity: 0.3;
     }
   </style>
 </head>
 <body>
-  <div class="book">
-    <div id="page"></div>
+  <div class="app">
+    <div id="page" class="page"></div>
     <div class="nav">
+      <button id="homeBtn">🏠 Home</button>
       <button id="prevBtn">◀ Back</button>
       <button id="nextBtn">Next ▶</button>
     </div>
@@ -197,29 +242,29 @@
       "five","six","seven","eight","nine","ten"
     ];
 
-    // 1) Number pages 1–10
+    // Number pages 1–10
     const numberPages = Array.from({ length: 10 }, (_, i) => {
       const n = i + 1;
       return { type: "number", n };
     });
 
-    // 2) Missing-number sequences (kids see and say them) [web:62][web:69]
+    // Missing-number sequences [web:62][web:69]
     const missingPages = [
-      { sequence: [1, 2, null, 4], answers: [3] },               // 1, 2, __, 4
-      { sequence: [3, null, 5], answers: [4] },                  // 3, __, 5
-      { sequence: [3, null, 7], answers: [5] },                  // 3, __, 7
-      { sequence: [6, 7, null, 9, 10], answers: [8] },           // 6, 7, __, 9, 10
-      { sequence: [2, null, 6, null, 10], answers: [4, 8] }      // 2, __, 6, __, 10
+      { sequence: [1, 2, null, 4], answers: [3] },
+      { sequence: [3, null, 5], answers: [4] },
+      { sequence: [3, null, 7], answers: [5] },
+      { sequence: [6, 7, null, 9, 10], answers: [8] },
+      { sequence: [2, null, 6, null, 10], answers: [4, 8] }
     ];
 
-    // 3) Before / After / Between
+    // Before / After / Between
     const relationPages = [
       { mode: "before", shown: 5, answer: 4 },
       { mode: "after", shown: 7, answer: 8 },
       { mode: "between", left: 4, right: 6, answer: 5 }
     ];
 
-    // 4) Extra interactive activities
+    // Extra games
     const extraPages = [
       {
         type: "match",
@@ -245,21 +290,23 @@
       }
     ];
 
-    // 5) Guess My Number (1–20, higher/lower) [web:70][web:73][web:77]
+    // Guess My Number setup (1–20 clickable line) [web:83][web:90]
     const guessMin = 1;
     const guessMax = 20;
     let secretNumber = null;
     let guessMessage = "";
+    let eliminated = {}; // store which numbers are ruled out
 
     function resetGuessGame() {
       secretNumber = Math.floor(Math.random() * (guessMax - guessMin + 1)) + guessMin;
-      guessMessage = "";
+      guessMessage = "Tap a number to guess. I’ll say higher or lower.";
+      eliminated = {};
     }
 
-    // Build pages list
+    // Build page list
     const pages = [];
 
-    // Home screen
+    // Home
     pages.push({ type: "home" });
 
     // Section: Numbers 1–10
@@ -278,7 +325,7 @@
       pages.push({ type: "relation", data: item, id: "relation_" + index });
     });
 
-    // Section: Fun Number Games
+    // Section: Fun games
     pages.push({ type: "sectionHeader", title: "Fun Number Games" });
     extraPages.forEach((item, index) => {
       pages.push({ type: item.type, data: item, id: "extra_" + index });
@@ -288,16 +335,16 @@
     pages.push({ type: "sectionHeader", title: "Guess My Number (1–20)" });
     pages.push({ type: "guessNumber", id: "guess_1" });
 
-    // Finish
+    // Finish page
     pages.push({ type: "finish" });
 
     let currentPage = 0;
 
     const pageDiv = document.getElementById("page");
+    const homeBtn = document.getElementById("homeBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
-    // Helper: find first index of a type
     function firstIndexOfType(type) {
       return pages.findIndex(p => p.type === type);
     }
@@ -312,12 +359,12 @@
           <div class="tagline">Tap a button to choose your game.</div>
           <div class="home-grid">
             <button class="home-btn" onclick="goToSection('number')">
-              <b>Numbers</b>
-              1–10 pages
+              <b>Numbers 1–10</b>
+              Learn each number
             </button>
             <button class="home-btn" onclick="goToSection('missing')">
-              <b>Missing</b>
-              Fill in numbers
+              <b>Missing Numbers</b>
+              Fill in blanks
             </button>
             <button class="home-btn" onclick="goToSection('relation')">
               <b>Before / After</b>
@@ -328,11 +375,10 @@
               Matching & patterns
             </button>
             <button class="home-btn" onclick="goToSection('guess')">
-              <b>Guess My #</b>
+              <b>Guess My Number</b>
               1–20 higher / lower
             </button>
           </div>
-          <p style="margin-top:10px;">You can always tap <b>Back</b> to come home.</p>
         `;
       }
 
@@ -499,17 +545,27 @@
         if (secretNumber === null) {
           resetGuessGame();
         }
-        const rangeLine = Array.from({ length: guessMax }, (_, i) => i + 1).join(" ");
         html += `
           <div class="pill">Guess My Number</div>
-          <h2>I’m thinking of a number...</h2>
-          <p>It’s between ${guessMin} and ${guessMax}. Can you find it?</p>
-          <div class="range-line">${rangeLine}</div>
-          <p>Type a guess and I will say “higher” or “lower”.</p>
-          <input class="num-input" id="guessInput" maxlength="2" />
-          <button onclick="makeGuess()">Guess</button>
+          <h2>I’m thinking of a number between ${guessMin} and ${guessMax}</h2>
+          <p>Tap a number. I’ll tell you if my secret number is higher or lower.</p>
+          <div class="number-line">
+            ${Array.from({ length: guessMax }, (_, i) => {
+              const num = i + 1;
+              const extraClass = eliminated[num]
+                ? " eliminated"
+                : "";
+              return `
+                <div
+                  class="number-bubble${extraClass}"
+                  data-num="${num}"
+                  onclick="clickGuessBubble(${num})"
+                >${num}</div>
+              `;
+            }).join("")}
+          </div>
           <div id="guessFeedback" class="feedback">${guessMessage}</div>
-          <button style="margin-top:6px;" onclick="resetGuessAndRender()">New Number</button>
+          <button onclick="resetGuessAndRender()">New Secret Number</button>
         `;
       }
 
@@ -517,16 +573,25 @@
         html += `
           <h1>Yay! You did it!</h1>
           <p class="tagline">You counted, found missing numbers, played games, and guessed numbers to 20.</p>
-          <p>Tap <b>Back</b> to visit the home screen and play again.</p>
+          <p>Tap <b>Home</b> to pick another game.</p>
         `;
       }
 
       pageDiv.innerHTML = html;
+
+      // After rendering, mark any already eliminated bubbles
+      if (p.type === "guessNumber") {
+        Object.keys(eliminated).forEach(n => {
+          const el = document.querySelector('.number-bubble[data-num="' + n + '"]');
+          if (el) el.classList.add("eliminated");
+        });
+      }
+
       prevBtn.disabled = currentPage === 0;
       nextBtn.disabled = currentPage === pages.length - 1;
     }
 
-    // HOME BUTTON HELPERS
+    // HOME navigation
     window.goToSection = function(section) {
       let targetIndex = 0;
       if (section === "number") {
@@ -655,24 +720,38 @@
       }
     };
 
-    // GUESS MY NUMBER
-    window.makeGuess = function() {
-      const input = document.getElementById("guessInput");
-      const feedback = document.getElementById("guessFeedback");
-      const val = parseInt(input.value, 10);
+    // GUESS MY NUMBER – clickable bubbles
+    window.clickGuessBubble = function(num) {
+      if (secretNumber === null) resetGuessGame();
 
-      if (isNaN(val) || val < guessMin || val > guessMax) {
-        guessMessage = "Pick a number between " + guessMin + " and " + guessMax + ".";
-      } else if (val === secretNumber) {
-        guessMessage = "You got it! The secret number was " + secretNumber + "!";
-      } else if (val < secretNumber) {
-        guessMessage = "Higher than " + val + ". Try again!";
+      const bubbles = document.querySelectorAll(".number-bubble");
+      bubbles.forEach(b => b.classList.remove("clicked", "correct"));
+
+      const bubble = document.querySelector('.number-bubble[data-num="' + num + '"]');
+      if (!bubble) return;
+      bubble.classList.add("clicked");
+
+      const feedback = document.getElementById("guessFeedback");
+      if (num === secretNumber) {
+        bubble.classList.add("correct");
+        guessMessage = "You got it! My secret number was " + secretNumber + "!";
+        feedback.className = "feedback good";
+      } else if (num < secretNumber) {
+        guessMessage = "Higher than " + num + ". Tap a bigger number.";
+        feedback.className = "feedback bad";
+        for (let i = guessMin; i <= num; i++) eliminated[i] = true;
       } else {
-        guessMessage = "Lower than " + val + ". Try again!";
+        guessMessage = "Lower than " + num + ". Tap a smaller number.";
+        feedback.className = "feedback bad";
+        for (let i = num; i <= guessMax; i++) eliminated[i] = true;
       }
+
       feedback.textContent = guessMessage;
-      feedback.className = "feedback " + (val === secretNumber ? "good" : "bad");
-      input.value = "";
+      // Apply eliminated style
+      Object.keys(eliminated).forEach(n => {
+        const el = document.querySelector('.number-bubble[data-num="' + n + '"]');
+        if (el) el.classList.add("eliminated");
+      });
     };
 
     window.resetGuessAndRender = function() {
@@ -681,6 +760,11 @@
     };
 
     // NAVIGATION
+    homeBtn.addEventListener("click", () => {
+      currentPage = 0;
+      renderPage();
+    });
+
     prevBtn.addEventListener("click", () => {
       if (currentPage > 0) {
         currentPage--;
@@ -695,11 +779,8 @@
       }
     });
 
-    function firstIndexOfType(type) {
-      return pages.findIndex(p => p.type === type);
-    }
-
-    // First render
+    // Initial render
+    resetGuessGame();
     renderPage();
   </script>
 </body>
