@@ -319,8 +319,18 @@
     .vowel-grid {
       display: flex;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       margin: 12px 0;
+    }
+    .vowel-btn {
+      background: #fff3e0;
+      border-radius: 18px;
+      border: 2px solid #ff9800;
+      padding: 10px 16px;
+      font-size: 32px;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 60px;
     }
   </style>
 </head>
@@ -495,7 +505,7 @@
       F: { word: "Fish", icon: "🐟" },
       G: { word: "Goat", icon: "🐐" },
       H: { word: "Hat", icon: "🎩" },
-      I: { word: "Igloo", icon: "🏠" },
+      I: { word: "Igloo", icon: "🧊" }, // igloo-ish icon
       J: { word: "Jam", icon: "🍓" },
       K: { word: "Kite", icon: "🪁" },
       L: { word: "Lion", icon: "🦁" },
@@ -525,14 +535,24 @@
       targetLetter = letters[Math.floor(Math.random() * letters.length)];
     }
 
-    // Vowel sound game
+    // Vowel sound game – more items, vowel can be middle or start/end[web:204][web:211]
     const vowels = ["A", "E", "I", "O", "U"];
     const vowelItems = [
-      { vowel: "A", icon: "🍎" }, // apple
-      { vowel: "E", icon: "🥚" }, // egg
-      { vowel: "I", icon: "🍦" }, // ice cream
-      { vowel: "O", icon: "🐙" }, // octopus
-      { vowel: "U", icon: "☔" }  // umbrella
+      // short A
+      { vowel: "A", icon: "🐱", hint: "cat" },
+      { vowel: "A", icon: "👒", hint: "hat" },
+      // short E
+      { vowel: "E", icon: "🛏️", hint: "bed" },
+      { vowel: "E", icon: "🧹", hint: "red broom (red)" },
+      // short I
+      { vowel: "I", icon: "🐷", hint: "pig" },
+      { vowel: "I", icon: "🍦", hint: "ice" },
+      // short O
+      { vowel: "O", icon: "🐶", hint: "dog" },
+      { vowel: "O", icon: "🍎", hint: "hot apple (hot)" },
+      // short U
+      { vowel: "U", icon: "☀️", hint: "sun" },
+      { vowel: "U", icon: "☕", hint: "cup" }
     ];
     let targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
     let vowelUppercase = true;
@@ -854,9 +874,9 @@
         if (guessStep === 1) {
           for (let n = 1; n <= guessMax; n += 1) numbers.push(n);
         } else if (guessStep === 2) {
-          for (let n = 2; n <= guessMax; n += 2) numbers.push(n); // 2,4,6…[web:111]
+          for (let n = 2; n <= guessMax; n += 2) numbers.push(n); // 2,4,6…[web:204]
         } else {
-          for (let n = 3; n <= guessMax; n += 3) numbers.push(n); // 3,6,9…[web:112]
+          for (let n = 3; n <= guessMax; n += 3) numbers.push(n); // 3,6,9…[web:211]
         }
         html += `
           <div class="pill">Guess My Number</div>
@@ -936,7 +956,7 @@
           </div>
           <div class="vowel-grid">
             ${labelVowels.map(V => `
-              <button class="letter-btn" onclick="clickVowel('${V}')">${V}</button>
+              <button class="vowel-btn" onclick="clickVowel('${V}')">${V}</button>
             `).join("")}
           </div>
           <div id="vowelFeedback" class="feedback"></div>
@@ -1223,7 +1243,6 @@
     };
 
     window.clickLetter = function(label) {
-      // label might be lower/upper; normalize to upper for logic
       const guessed = label.toUpperCase();
       const src = letterSoundUrls[guessed];
       const audio = document.getElementById("letterSound");
@@ -1235,7 +1254,6 @@
       totalGuesses++;
 
       if (guessed === targetLetter) {
-        const data = letterData[targetLetter];
         feedback.textContent = `Yes! ${guessed} is the first letter.`;
         feedback.className = "feedback good";
         playSound("soundSuccess");
