@@ -346,6 +346,11 @@
       border-radius: 12px;
       padding: 8px 14px;
       min-width: 32px;
+      cursor: pointer;
+      background: #e3f2fd;
+    }
+    .unscramble-letter-box.used {
+      opacity: 0.3;
     }
     .unscramble-input {
       margin-top: 10px;
@@ -354,7 +359,43 @@
       border-radius: 10px;
       border: 2px solid #90a4ae;
       text-align: center;
-      width: 120px;
+      width: 140px;
+    }
+    .unscramble-emoji {
+      font-size: 72px;
+      margin-top: 10px;
+    }
+    /* WH words activity */
+    .wh-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0;
+      max-width: 520px;
+    }
+    .wh-btn {
+      background: #e8f5e9;
+      border-radius: 16px;
+      border: 2px solid #81c784;
+      padding: 8px 14px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 80px;
+    }
+    .wh-display {
+      margin-top: 16px;
+      font-size: 20px;
+    }
+    .wh-big-word {
+      font-size: 34px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .wh-emoji {
+      font-size: 48px;
+      margin-bottom: 4px;
     }
   </style>
 </head>
@@ -444,7 +485,7 @@
 
     function handleWin() {
       totalWins++;
-      if (totalWins > 0 && totalWins % 5 === 0) { // gift every 5 wins[web:198][web:201]
+      if (totalWins > 0 && totalWins % 5 === 0) { // gift every 5 wins[web:227]
         awardGift();
         showPresentPopup();
       }
@@ -504,10 +545,10 @@
       }
     ];
 
-    // Guess My Number (1–20 visible, internal 0–20 allowed)
+    // Guess My Number (1–20 visible)
     const guessMin = 0;
     const guessMax = 20;
-    let guessStep = 1;        // 1s, 2s, 3s
+    let guessStep = 1;
     let secretNumber = null;
     let guessMessage = "";
     let eliminated = {};
@@ -529,7 +570,7 @@
       F: { word: "Fish", icon: "🐟" },
       G: { word: "Goat", icon: "🐐" },
       H: { word: "Hat", icon: "🎩" },
-      I: { word: "Igloo", icon: "🏔" }, // clearer igloo-like icon[web:189]
+      I: { word: "Igloo", icon: "🏔" },
       J: { word: "Jam", icon: "🍓" },
       K: { word: "Kite", icon: "🪁" },
       L: { word: "Lion", icon: "🦁" },
@@ -559,26 +600,26 @@
       targetLetter = letters[Math.floor(Math.random() * letters.length)];
     }
 
-    // Vowel sound game – many items, vowel can be middle or elsewhere in the word[web:218][web:221]
+    // Vowel sound game – many items, vowel can be middle or elsewhere[web:233]
     const vowels = ["A", "E", "I", "O", "U"];
     const vowelItems = [
-      // short A: cat/hat/bag
+      // short A
+      { vowel: "A", icon: "🍎", hint: "apple" },
       { vowel: "A", icon: "🐱", hint: "cat" },
       { vowel: "A", icon: "👒", hint: "hat" },
-      { vowel: "A", icon: "👜", hint: "bag" },
-      // short E: bed/red/net
+      // short E
       { vowel: "E", icon: "🛏️", hint: "bed" },
       { vowel: "E", icon: "🟥", hint: "red" },
       { vowel: "E", icon: "🎾", hint: "net" },
-      // short I: pig/lip/sit
+      // short I
       { vowel: "I", icon: "🐷", hint: "pig" },
       { vowel: "I", icon: "👄", hint: "lip" },
       { vowel: "I", icon: "🪑", hint: "sit (chair)" },
-      // short O: dog/log/box
+      // short O
       { vowel: "O", icon: "🐶", hint: "dog" },
       { vowel: "O", icon: "🪵", hint: "log" },
       { vowel: "O", icon: "📦", hint: "box" },
-      // short U: sun/cup/bug
+      // short U
       { vowel: "U", icon: "☀️", hint: "sun" },
       { vowel: "U", icon: "☕", hint: "cup" },
       { vowel: "U", icon: "🐞", hint: "bug" }
@@ -590,9 +631,22 @@
       targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
     }
 
-    // Unscramble game – simple CVC words, no emojis[web:218][web:224]
+    // Unscramble game – simple CVC words, no emojis in letters[web:227]
     const unscrambleWords = ["cat","dog","sun","pig","hat","bed","log","bug","cup","map"];
+    const unscrambleWordEmoji = {
+      cat: "🐱",
+      dog: "🐶",
+      sun: "☀️",
+      pig: "🐷",
+      hat: "👒",
+      bed: "🛏️",
+      log: "🪵",
+      bug: "🐞",
+      cup: "☕",
+      map: "🗺️"
+    };
     let currentUnscramble = pickUnscramble();
+    let currentUnscrambleInput = "";
 
     function shuffleString(str) {
       return shuffleArray(str.split("")).join("");
@@ -602,8 +656,20 @@
       const word = unscrambleWords[Math.floor(Math.random() * unscrambleWords.length)];
       let scrambled = shuffleString(word);
       if (scrambled === word) scrambled = shuffleString(word);
-      return { word, scrambled };
+      currentUnscrambleInput = "";
+      return { word, scrambled, used: [false,false,false] };
     }
+
+    // WH words activity – who what when where why how[web:236][web:239]
+    const whItems = [
+      { word: "Who", emoji: "🧑‍🤝‍🧑", hint: "a person" },
+      { word: "What", emoji: "📦", hint: "a thing" },
+      { word: "When", emoji: "⏰", hint: "a time" },
+      { word: "Where", emoji: "📍", hint: "a place" },
+      { word: "Why", emoji: "❓", hint: "a reason" },
+      { word: "How", emoji: "🛠️", hint: "a way" }
+    ];
+    let currentWh = whItems[0];
 
     // Build page list
     const pages = [];
@@ -638,6 +704,9 @@
 
     pages.push({ type: "sectionHeader", title: "Unscramble the Word" });
     pages.push({ type: "unscrambleGame", id: "unscramble_1" });
+
+    pages.push({ type: "sectionHeader", title: "Who / What / When / Where / Why / How" });
+    pages.push({ type: "whGame", id: "wh_1" });
 
     pages.push({ type: "prizeCollection" });
 
@@ -718,6 +787,10 @@
               <b>Unscramble</b>
               Build the word
             </button>
+            <button class="home-btn" onclick="goToSection('wh')">
+              <b>Who / What / When...</b>
+              Question words
+            </button>
             <button class="home-btn" onclick="goToSection('prizes')">
               <b>Prize Collection</b>
               See your gifts
@@ -755,7 +828,8 @@
           !p.title.startsWith("Guess My Number") &&
           !p.title.startsWith("Guess the Letter") &&
           !p.title.startsWith("Vowel") &&
-          !p.title.startsWith("Unscramble")
+          !p.title.startsWith("Unscramble") &&
+          !p.title.startsWith("Who")
         ) {
           html += renderActivityNumberLine();
           html += `<div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div><div class="collection"></div>`;
@@ -1026,18 +1100,45 @@
         html += `
           <div class="pill">Unscramble</div>
           <h2>Unscramble the word</h2>
-          <p>Look at the letters, say the sounds, and build the word.</p>
+          <p>Tap the letters to build the word.</p>
           <div class="unscramble-letters">
-            ${currentUnscramble.scrambled.split("").map(ch => `
-              <div class="unscramble-letter-box">${ch}</div>
+            ${currentUnscramble.scrambled.split("").map((ch, idx) => `
+              <div class="unscramble-letter-box" data-idx="${idx}" onclick="clickUnscrambleLetter(${idx})">${ch}</div>
             `).join("")}
           </div>
-          <input id="unscrambleInput" class="unscramble-input" maxlength="3" />
+          <input id="unscrambleInput" class="unscramble-input" maxlength="3" value="${currentUnscrambleInput.toUpperCase()}" readonly />
           <div>
             <button onclick="checkUnscramble()">Check</button>
             <button onclick="newUnscramble()">New Word</button>
+            <button onclick="clearUnscramble()">Clear</button>
           </div>
           <div id="unscrambleFeedback" class="feedback"></div>
+          <div id="unscrambleEmoji" class="unscramble-emoji"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
+          <div class="collection"></div>
+        `;
+        // mark used letters if any
+        const boxes = document.querySelectorAll(".unscramble-letter-box");
+        currentUnscramble.used.forEach((u, i) => {
+          if (u && boxes[i]) boxes[i].classList.add("used");
+        });
+      }
+
+      if (p.type === "whGame") {
+        html += `
+          <div class="pill">Question Words</div>
+          <h2>Tap a word to make it big!</h2>
+          <p>These words help us ask questions.</p>
+          <div class="wh-grid">
+            ${whItems.map(item => `
+              <button class="wh-btn" onclick="clickWh('${item.word}')">${item.word}</button>
+            `).join("")}
+          </div>
+          <div class="wh-display">
+            <div class="wh-emoji">${currentWh.emoji}</div>
+            <div class="wh-big-word">${currentWh.word}</div>
+            <p>${currentWh.word} asks about ${currentWh.hint}.</p>
+          </div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>
         `;
@@ -1080,7 +1181,7 @@
       renderPage();
     };
 
-    // Activity bubbles: highlight and fill relation input for current page only
+    // Activity bubbles
     window.clickActivityBubble = function(num) {
       const bubbles = document.querySelectorAll(".number-bubble[data-activity-num]");
       bubbles.forEach(b => b.classList.remove("clicked"));
@@ -1114,6 +1215,8 @@
         targetIndex = firstIndexOfType("vowelGame");
       } else if (section === "unscramble") {
         targetIndex = firstIndexOfType("unscrambleGame");
+      } else if (section === "wh") {
+        targetIndex = firstIndexOfType("whGame");
       } else if (section === "prizes") {
         targetIndex = firstIndexOfType("prizeCollection");
       }
@@ -1123,7 +1226,7 @@
       }
     };
 
-    // Check functions with stats + sounds
+    // Check functions
     window.checkMissing = function(id) {
       const page = pages.find(p => p.id === id);
       const data = page.data;
@@ -1262,7 +1365,7 @@
       updateStatsDisplay();
     };
 
-    // Guess My Number – 1–20 visible, stats
+    // Guess My Number
     window.clickGuessBubble = function(num) {
       if (secretNumber === null) resetGuessGame();
       playSound("soundClick");
@@ -1315,7 +1418,7 @@
       renderPage();
     };
 
-    // Letter game – icon first, guess letter, case toggle
+    // Letter game
     window.setLetterCase = function(isUpper) {
       letterUppercase = isUpper;
       renderPage();
@@ -1351,7 +1454,7 @@
       renderPage();
     };
 
-    // Vowel game – emoji, vowel buttons with case toggle
+    // Vowel game
     window.setVowelCase = function(isUpper) {
       vowelUppercase = isUpper;
       renderPage();
@@ -1381,21 +1484,41 @@
       renderPage();
     };
 
-    // Unscramble game
+    // Unscramble game – clickable letters and emoji on success
+    window.clickUnscrambleLetter = function(idx) {
+      playSound("soundClick");
+      if (currentUnscramble.used[idx]) return;
+      if (currentUnscrambleInput.length >= currentUnscramble.word.length) return;
+
+      const letter = currentUnscramble.scrambled[idx];
+      currentUnscrambleInput += letter;
+      currentUnscramble.used[idx] = true;
+      renderPage();
+    };
+
+    window.clearUnscramble = function() {
+      playSound("soundClick");
+      currentUnscrambleInput = "";
+      currentUnscramble.used = currentUnscramble.used.map(() => false);
+      renderPage();
+    };
+
     window.checkUnscramble = function() {
-      const input = document.getElementById("unscrambleInput");
       const feedback = document.getElementById("unscrambleFeedback");
-      const guess = (input.value || "").toLowerCase();
+      const emojiDiv = document.getElementById("unscrambleEmoji");
+      const guess = (currentUnscrambleInput || "").toLowerCase();
 
       totalGuesses++;
       if (guess === currentUnscramble.word) {
         feedback.textContent = "Nice! You unscrambled the word " + currentUnscramble.word + "!";
         feedback.className = "feedback good";
+        emojiDiv.textContent = unscrambleWordEmoji[currentUnscramble.word] || "";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Try again. Say the sounds slowly and blend them.";
+        feedback.textContent = "Try again. Tap the letters in order to build the word.";
         feedback.className = "feedback bad";
+        emojiDiv.textContent = "";
         playSound("soundError");
       }
       updateStatsDisplay();
@@ -1405,6 +1528,15 @@
       playSound("soundClick");
       currentUnscramble = pickUnscramble();
       renderPage();
+    };
+
+    // WH words activity
+    window.clickWh = function(word) {
+      const found = whItems.find(w => w.word === word);
+      if (found) {
+        currentWh = found;
+        renderPage();
+      }
     };
 
     // NAVIGATION (no sound)
