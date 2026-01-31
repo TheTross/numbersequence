@@ -95,6 +95,10 @@
       cursor: pointer;
       font-weight: bold;
     }
+    .choice-btn.selected {
+      background: #ffe0b2;
+      border-color: #fb8c00;
+    }
     .card-row { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
     .card {
       width: 80px;
@@ -106,6 +110,10 @@
       justify-content: center;
       background: #f3e5f5;
       cursor: pointer;
+    }
+    .card.selected {
+      background: #e1bee7;
+      border-color: #ab47bc;
     }
     .card span { font-size: 30px; color: #6a1b9a; font-weight: bold; }
 
@@ -383,6 +391,10 @@
       }
     }
 
+    // selections for number games
+    let activitySelectedNumber = null; // from number line
+    let activitySelectedTop = null;    // from top choices/cards
+
     const numberWords = ["","one","two","three","four","five","six","seven","eight","nine","ten"];
     const numberPages = Array.from({ length: 10 }, (_, i) => ({ type:"number", n:i+1 }));
 
@@ -466,7 +478,7 @@
     let currentUnscramble = null;
     let currentUnscrambleInput = "";
     let currentUnscrambleUsed = [];
-    let unscrambleUppercase = true; // toggle for display
+    let unscrambleUppercase = true; // toggle
 
     function shuffleString(str){ return shuffleArray(str.split("")).join(""); }
     function pickUnscramble(){
@@ -479,7 +491,7 @@
     }
     pickUnscramble();
 
-    // WH words activity
+    // WH words
     const whItems = [
       { word:"Who",   emoji:"👩🏻‍🦱👨🏾‍🦱👧🏼", hint:"a person" },   // mixed people[web:252][web:261]
       { word:"What",  emoji:"📦",             hint:"a thing" },
@@ -550,6 +562,13 @@
         </div>`;
     }
 
+    function goToNextPage() {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        renderPage();
+      }
+    }
+
     function renderPage(){
       const p = pages[currentPage];
       let html = "";
@@ -583,7 +602,7 @@
           <div class="word">${numberWords[n]}</div>
           <div class="dots">${"<span class='dot'></span>".repeat(n)}</div>
           <p>Say the number out loud, then count the dots together.</p>
-          <p>Tap a number on the line that matches this page.</p>
+          <p>Tap a number on the line to jump to that page.</p>
           ${renderActivityNumberLine()}
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>`;
@@ -616,7 +635,7 @@
           if (i<seq.length-1) html += " , ";
         });
         html += `</div>
-          <p>Tap numbers on the line and see if they could fit.</p>
+          <p>Tap numbers on the line and see if they could fit. Clicking a number fills the box.</p>
           ${renderActivityNumberLine()}
           <p>Hint: Count in order and listen for the number that is missing.</p>
           <button onclick="checkMissing('${id}')">Check</button>
@@ -652,57 +671,68 @@
       }
 
       if (p.type==="match"){
+        activitySelectedNumber = null;
+        activitySelectedTop = null;
         const d = p.data, id=p.id;
         html += `
           <div class="pill">Match</div>
           <h2>Which number matches these dots?</h2>
           <div class="dots">${"<span class='dot'></span>".repeat(d.number)}</div>
           <p>Count the dots out loud. Then choose the right number.</p>
-          <div class="choices">
-            ${d.options.map(o=>`<button class="choice-btn" onclick="checkChoice('${id}',${o})">${o}</button>`).join("")}
+          <div class="choices" id="${id}_choices">
+            ${d.options.map(o=>`<button class="choice-btn" onclick="selectMatch('${id}',${o})">${o}</button>`).join("")}
           </div>
           <p>Tap the matching number on the line too.</p>
           ${renderActivityNumberLine()}
+          <button onclick="checkMatch('${id}')">Check answer</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>`;
       }
 
       if (p.type==="nextNumber"){
+        activitySelectedNumber = null;
+        activitySelectedTop = null;
         const d=p.data, id=p.id;
         html += `
           <div class="pill">Next Number</div>
           <h2>What comes after ${d.start}?</h2>
           <div class="sequence-row">${d.start} , ?</div>
           <p>Start at ${d.start} and count on together.</p>
-          <div class="choices">
-            ${d.options.map(o=>`<button class="choice-btn" onclick="checkNext('${id}',${o})">${o}</button>`).join("")}
+          <div class="choices" id="${id}_choices">
+            ${d.options.map(o=>`<button class="choice-btn" onclick="selectNext('${id}',${o})">${o}</button>`).join("")}
           </div>
-          <p>Find ${d.start+1} on the number line.</p>
+          <p>Tap the same number on the number line.</p>
           ${renderActivityNumberLine()}
+          <button onclick="checkNext('${id}')">Check answer</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>`;
       }
 
       if (p.type==="finishSequence"){
+        activitySelectedNumber = null;
+        activitySelectedTop = null;
         const d=p.data, id=p.id;
         html += `
           <div class="pill">Finish the Sequence</div>
           <h2>What comes next?</h2>
           <div class="sequence-row">${d.pattern.join(" , ")} , __</div>
           <p>Say the pattern together: ${d.pattern.join(", ")} ...?</p>
-          <div class="choices">
-            ${d.choices.map(o=>`<button class="choice-btn" onclick="checkFinish('${id}',${o})">${o}</button>`).join("")}
+          <div class="choices" id="${id}_choices">
+            ${d.choices.map(o=>`<button class="choice-btn" onclick="selectFinish('${id}',${o})">${o}</button>`).join("")}
           </div>
           <p>Tap the number on the line that you think comes next.</p>
           ${renderActivityNumberLine()}
+          <button onclick="checkFinish('${id}')">Check answer</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>`;
       }
 
       if (p.type==="cardPick"){
+        activitySelectedNumber = null;
+        activitySelectedTop = null;
         const d=p.data, id=p.id, seq=d.displaySequence;
         html += `
           <div class="pill">Number Cards</div>
@@ -714,11 +744,12 @@
         });
         html += `</div>
           <p>Say the numbers you see, then choose the card that fits.</p>
-          <div class="card-row">
-            ${d.cardOptions.map(o=>`<div class="card" onclick="checkCard('${id}',${o})"><span>${o}</span></div>`).join("")}
+          <div class="card-row" id="${id}_cards">
+            ${d.cardOptions.map(o=>`<div class="card" onclick="selectCard('${id}',${o})"><span>${o}</span></div>`).join("")}
           </div>
           <p>Tap the same number on the number line.</p>
           ${renderActivityNumberLine()}
+          <button onclick="checkCard('${id}')">Check answer</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>`;
@@ -883,10 +914,42 @@
       bubbles.forEach(b=>b.classList.remove("clicked"));
       const bubble = document.querySelector(`.number-bubble[data-activity-num="${num}"]`);
       if (bubble) bubble.classList.add("clicked");
+
       const p = pages[currentPage];
-      if (p.type==="relation"){
-        const input = document.getElementById(p.id+"_in");
+
+      // relation pages: put value in box
+      if (p.type === "relation") {
+        const input = document.getElementById(p.id + "_in");
         if (input) input.value = String(num);
+      }
+
+      // missing-number pages: fill first empty missing box
+      if (p.type === "missing") {
+        const seq = p.data.sequence;
+        for (let i = 0; i < seq.length; i++) {
+          if (seq[i] === null) {
+            const box = document.getElementById(p.id + "_i" + i);
+            if (box && !box.value) {
+              box.value = String(num);
+              break;
+            }
+          }
+        }
+      }
+
+      // numbers 1–10: clicking number line jumps to that page
+      if (p.type === "number") {
+        const idx = pages.findIndex(pg => pg.type === "number" && pg.n === num);
+        if (idx !== -1) {
+          currentPage = idx;
+          renderPage();
+          return;
+        }
+      }
+
+      // number games: remember which bottom number was chosen
+      if (["match","nextNumber","finishSequence","cardPick"].includes(p.type)) {
+        activitySelectedNumber = num;
       }
     };
 
@@ -905,6 +968,7 @@
       if (idx>=0){ currentPage=idx; renderPage(); }
     };
 
+    // missing & relation checks
     window.checkMissing = function(id){
       const page = pages.find(p=>p.id===id);
       const data = page.data;
@@ -952,78 +1016,158 @@
       updateStatsDisplay();
     };
 
-    window.checkChoice = function(id,choice){
-      const page = pages.find(p=>p.id===id);
+    // NUMBER GAMES – top selections + checks
+
+    window.selectMatch = function(id, choice) {
+      playSound("soundClick");
+      activitySelectedTop = choice;
+      const wrap = document.getElementById(id + "_choices");
+      if (wrap) {
+        wrap.querySelectorAll(".choice-btn").forEach(btn => btn.classList.remove("selected"));
+        const btn = Array.from(wrap.querySelectorAll(".choice-btn")).find(b => b.textContent.trim() === String(choice));
+        if (btn) btn.classList.add("selected");
+      }
+    };
+
+    window.checkMatch = function(id) {
+      const page = pages.find(p => p.id === id);
       const d = page.data;
-      const fb = document.getElementById(id+"_feedback");
+      const fb = document.getElementById(id + "_feedback");
+
+      if (activitySelectedTop == null || activitySelectedNumber == null) {
+        fb.textContent = "Pick a number above and tap a number on the line, then press Check.";
+        fb.className = "feedback bad";
+        return;
+      }
+
       totalGuesses++;
-      if (choice===d.number){
-        fb.textContent="You matched the dots and the number!";
-        fb.className="feedback good";
+      if (activitySelectedTop === d.number && activitySelectedNumber === d.number) {
+        fb.textContent = "You matched the dots and the number!";
+        fb.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
+        goToNextPage();
       } else {
-        fb.textContent="Oops! Count the dots one more time.";
-        fb.className="feedback bad";
+        fb.textContent = "Try again. Make sure both choices match the dots.";
+        fb.className = "feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkNext = function(id,choice){
-      const page = pages.find(p=>p.id===id);
+    window.selectNext = function(id, choice) {
+      playSound("soundClick");
+      activitySelectedTop = choice;
+      const wrap = document.getElementById(id + "_choices");
+      if (wrap) {
+        wrap.querySelectorAll(".choice-btn").forEach(btn => btn.classList.remove("selected"));
+        const btn = Array.from(wrap.querySelectorAll(".choice-btn")).find(b => b.textContent.trim() === String(choice));
+        if (btn) btn.classList.add("selected");
+      }
+    };
+
+    window.checkNext = function(id) {
+      const page = pages.find(p => p.id === id);
       const d = page.data;
-      const fb = document.getElementById(id+"_feedback");
+      const fb = document.getElementById(id + "_feedback");
+
+      if (activitySelectedTop == null || activitySelectedNumber == null) {
+        fb.textContent = "Pick a number above and tap a number on the line, then press Check.";
+        fb.className = "feedback bad";
+        return;
+      }
+
+      const correct = d.start + 1;
       totalGuesses++;
-      if (choice===d.start+1){
-        fb.textContent="Yes! That’s the next number.";
-        fb.className="feedback good";
+      if (activitySelectedTop === correct && activitySelectedNumber === correct) {
+        fb.textContent = "Yes! That’s the next number.";
+        fb.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
+        goToNextPage();
       } else {
-        fb.textContent="Try again. Say the numbers in order: "+d.start+", ...";
-        fb.className="feedback bad";
+        fb.textContent = "Try again. Say the numbers in order and see what comes after.";
+        fb.className = "feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkFinish = function(id,choice){
-      const page = pages.find(p=>p.id===id);
+    window.selectFinish = function(id, choice) {
+      playSound("soundClick");
+      activitySelectedTop = choice;
+      const wrap = document.getElementById(id + "_choices");
+      if (wrap) {
+        wrap.querySelectorAll(".choice-btn").forEach(btn => btn.classList.remove("selected"));
+        const btn = Array.from(wrap.querySelectorAll(".choice-btn")).find(b => b.textContent.trim() === String(choice));
+        if (btn) btn.classList.add("selected");
+      }
+    };
+
+    window.checkFinish = function(id) {
+      const page = pages.find(p => p.id === id);
       const d = page.data;
-      const fb = document.getElementById(id+"_feedback");
+      const fb = document.getElementById(id + "_feedback");
+
+      if (activitySelectedTop == null || activitySelectedNumber == null) {
+        fb.textContent = "Pick a number above and tap a number on the line, then press Check.";
+        fb.className = "feedback bad";
+        return;
+      }
+
       totalGuesses++;
-      if (choice===d.correctNext){
-        fb.textContent="Nice! You finished the sequence!";
-        fb.className="feedback good";
+      if (activitySelectedTop === d.correctNext && activitySelectedNumber === d.correctNext) {
+        fb.textContent = "Nice! You finished the sequence!";
+        fb.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
+        goToNextPage();
       } else {
-        fb.textContent="Say the pattern again and see what comes next.";
-        fb.className="feedback bad";
+        fb.textContent = "Say the pattern again and see what comes next.";
+        fb.className = "feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkCard = function(id,choice){
-      const page = pages.find(p=>p.id===id);
+    window.selectCard = function(id, choice) {
+      playSound("soundClick");
+      activitySelectedTop = choice;
+      const row = document.getElementById(id + "_cards");
+      if (row) {
+        row.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+        const card = Array.from(row.querySelectorAll(".card")).find(c => c.textContent.trim() === String(choice));
+        if (card) card.classList.add("selected");
+      }
+    };
+
+    window.checkCard = function(id) {
+      const page = pages.find(p => p.id === id);
       const d = page.data;
-      const fb = document.getElementById(id+"_feedback");
+      const fb = document.getElementById(id + "_feedback");
+
+      if (activitySelectedTop == null || activitySelectedNumber == null) {
+        fb.textContent = "Pick a card and tap the same number on the line, then press Check.";
+        fb.className = "feedback bad";
+        return;
+      }
+
       totalGuesses++;
-      if (choice===d.correct){
-        fb.textContent="Perfect pick! That card completes the sequence.";
-        fb.className="feedback good";
+      if (activitySelectedTop === d.correct && activitySelectedNumber === d.correct) {
+        fb.textContent = "Perfect pick! That card completes the sequence.";
+        fb.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
+        goToNextPage();
       } else {
-        fb.textContent="Look at the numbers and think: which one belongs in the space?";
-        fb.className="feedback bad";
+        fb.textContent = "Look at the numbers and think: which one belongs in the space?";
+        fb.className = "feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
+    // Guess My Number
     window.clickGuessBubble = function(num){
       if (secretNumber===null) resetGuessGame();
       playSound("soundClick");
@@ -1062,6 +1206,7 @@
     window.resetGuessAndRender = function(){ playSound("soundClick"); resetGuessGame(); renderPage(); };
     window.setGuessStep = function(step){ playSound("soundClick"); guessStep=step; renderPage(); };
 
+    // Letter game
     window.setLetterCase = function(isUpper){ letterUppercase=isUpper; renderPage(); };
     window.clickLetter = function(label){
       const guessed = label.toUpperCase();
@@ -1084,6 +1229,7 @@
     };
     window.resetLetterAndRender = function(){ playSound("soundClick"); resetLetterGame(); renderPage(); };
 
+    // Vowel game
     window.setVowelCase = function(isUpper){ vowelUppercase=isUpper; renderPage(); };
     window.clickVowel = function(label){
       const guessed = label.toUpperCase();
@@ -1103,7 +1249,7 @@
     };
     window.resetVowelAndRender = function(){ playSound("soundClick"); resetVowelGame(); renderPage(); };
 
-    // Unscramble game
+    // Unscramble
     window.setUnscrambleCase = function(isUpper){
       unscrambleUppercase = isUpper;
       renderPage();
