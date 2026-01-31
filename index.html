@@ -314,13 +314,13 @@
   <div id="presentModal" class="present-modal">
     <div class="present-content">
       <div class="present-emoji">🎁</div>
-      <h2>Wow! 5 Wins!</h2>
-      <p>You unlocked a special present! Check your collection!</p>
+      <h2>Wow! You won a prize!</h2>
+      <p>Check your collection to see what you got!</p>
       <button onclick="closePresentPopup()">Close</button>
     </div>
   </div>
 
-  <!-- Sounds (generic + letter sound placeholder) -->
+  <!-- Sounds -->
   <audio id="soundClick" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
   <audio id="soundError" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
   <audio id="soundSuccess" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-preview.mp3"></audio>
@@ -391,10 +391,13 @@
       collEls.forEach(el => {
         el.textContent = text;
       });
-      if (totalWins > 0 && totalWins % 5 === 0) {
-        awardGift();
-        showPresentPopup();
-      }
+    }
+
+    function handleWin() {
+      totalWins++;
+      // award a gift every win (you can change to % 5 if you want less often)
+      awardGift();
+      showPresentPopup();
     }
 
     // Words for numbers 1–10
@@ -465,7 +468,7 @@
       eliminated = {};
     }
 
-    // Letter game data
+    // Letter game data – now image first, then choose letter
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const letterImages = {
       A: { word: "Apple", url: "https://via.placeholder.com/150?text=A+Apple" },
@@ -495,17 +498,14 @@
       Y: { word: "Yarn", url: "https://via.placeholder.com/150?text=Y+Yarn" },
       Z: { word: "Zebra", url: "https://via.placeholder.com/150?text=Z+Zebra" }
     };
-    // Placeholder letter sound URLs – replace with real MP3s
     const letterSoundUrls = letters.reduce((acc, L) => {
       acc[L] = "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";
       return acc;
     }, {});
     let targetLetter = letters[Math.floor(Math.random() * letters.length)];
-    let lastLetterClicked = null;
 
     function resetLetterGame() {
       targetLetter = letters[Math.floor(Math.random() * letters.length)];
-      lastLetterClicked = null;
     }
 
     // Build page list
@@ -535,6 +535,8 @@
 
     pages.push({ type: "sectionHeader", title: "Guess the Letter" });
     pages.push({ type: "letterGame", id: "letter_1" });
+
+    pages.push({ type: "prizeCollection" });
 
     pages.push({ type: "finish" });
 
@@ -603,7 +605,11 @@
             </button>
             <button class="home-btn" onclick="goToSection('letter')">
               <b>Guess the Letter</b>
-              Sounds & pictures
+              Picture & sounds
+            </button>
+            <button class="home-btn" onclick="goToSection('prizes')">
+              <b>Prize Collection</b>
+              See your gifts
             </button>
           </div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
@@ -841,24 +847,32 @@
       }
 
       if (p.type === "letterGame") {
-        const info = letterImages[lastLetterClicked] || null;
-        const displayWord = info ? info.word : "";
-        const displayUrl = info ? info.url : "";
+        const info = letterImages[targetLetter];
         html += `
           <div class="pill">Guess the Letter</div>
-          <h2>Click a letter to hear its sound</h2>
-          <p>Try to find my secret letter. When you get it, you’ll see a picture!</p>
+          <h2>What letter does this start with?</h2>
+          <p>Look at the picture, listen to the sound, and tap the matching letter.</p>
+          <img class="letter-image" src="${info.url}" alt="${info.word}" />
+          <p>${info.word}</p>
           <div class="letter-grid">
             ${letters.map(L => `
               <button class="letter-btn" onclick="clickLetter('${L}')">${L}</button>
             `).join("")}
           </div>
           <div id="letterFeedback" class="feedback"></div>
-          ${displayWord ? `<p>${displayWord}</p>` : ""}
-          ${displayUrl ? `<img class="letter-image" src="${displayUrl}" alt="${displayWord}" />` : ""}
-          <button onclick="resetLetterAndRender()">New Secret Letter</button>
+          <button onclick="resetLetterAndRender()">New Picture</button>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>
+        `;
+      }
+
+      if (p.type === "prizeCollection") {
+        html += `
+          <h1>Your Prize Collection</h1>
+          <p class="tagline">See all the fun things you’ve won!</p>
+          <div class="collection"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
+          <p>Tap Home to play more games and win more prizes.</p>
         `;
       }
 
@@ -889,17 +903,19 @@
       renderPage();
     };
 
-    // Activity bubbles: also fill relation input when relevant
+    // Activity bubbles: highlight and fill relation input for current page only
     window.clickActivityBubble = function(num) {
       const bubbles = document.querySelectorAll(".number-bubble[data-activity-num]");
       bubbles.forEach(b => b.classList.remove("clicked"));
       const bubble = document.querySelector('.number-bubble[data-activity-num="' + num + '"]');
       if (bubble) bubble.classList.add("clicked");
 
-      // If on a relation page, put number in the input box
-      const relationInput = document.querySelector(".page input[id$='_in']");
-      if (relationInput) {
-        relationInput.value = String(num);
+      // If current page is relation, fill that page's input
+      const p = pages[currentPage];
+      if (p.type === "relation") {
+        const id = p.id;
+        const input = document.getElementById(id + "_in");
+        if (input) input.value = String(num);
       }
     };
 
@@ -918,6 +934,8 @@
         targetIndex = firstIndexOfType("guessNumber");
       } else if (section === "letter") {
         targetIndex = firstIndexOfType("letterGame");
+      } else if (section === "prizes") {
+        targetIndex = firstIndexOfType("prizeCollection");
       }
       if (targetIndex >= 0) {
         currentPage = targetIndex;
@@ -955,10 +973,10 @@
 
       totalGuesses++;
       if (correct) {
-        totalWins++;
         feedback.textContent = "Great job! You found the missing number!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Try again. Count the numbers out loud and listen for the missing one.";
         feedback.className = "feedback bad";
@@ -976,10 +994,10 @@
 
       totalGuesses++;
       if (val === d.answer) {
-        totalWins++;
         feedback.textContent = "Yes! That number fits perfectly.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Not quite. Use the number buttons and try again.";
         feedback.className = "feedback bad";
@@ -995,10 +1013,10 @@
 
       totalGuesses++;
       if (choice === d.number) {
-        totalWins++;
         feedback.textContent = "You matched the dots and the number!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Oops! Count the dots one more time.";
         feedback.className = "feedback bad";
@@ -1014,10 +1032,10 @@
 
       totalGuesses++;
       if (choice === d.start + 1) {
-        totalWins++;
         feedback.textContent = "Yes! That’s the next number.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Try again. Say the numbers in order: " + d.start + ", ...";
         feedback.className = "feedback bad";
@@ -1033,10 +1051,10 @@
 
       totalGuesses++;
       if (choice === d.correctNext) {
-        totalWins++;
         feedback.textContent = "Nice! You finished the sequence!";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Say the pattern again and see what comes next.";
         feedback.className = "feedback bad";
@@ -1052,10 +1070,10 @@
 
       totalGuesses++;
       if (choice === d.correct) {
-        totalWins++;
         feedback.textContent = "Perfect pick! That card completes the sequence.";
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = "Look at the numbers and think: which one belongs in the space?";
         feedback.className = "feedback bad";
@@ -1083,8 +1101,8 @@
         bubble.classList.add("correct");
         guessMessage = "You got it! My secret number was " + secretNumber + "!";
         feedback.className = "feedback good";
-        totalWins++;
         playSound("soundSuccess");
+        handleWin();
       } else if (num < secretNumber) {
         guessMessage = "Higher than " + num + ". Tap a bigger number.";
         feedback.className = "feedback bad";
@@ -1117,10 +1135,9 @@
       renderPage();
     };
 
-    // Letter game
+    // Letter game – image first, guess letter
     window.clickLetter = function(L) {
-      lastLetterClicked = L;
-      // play sound
+      // play sound for that letter
       const src = letterSoundUrls[L];
       const audio = document.getElementById("letterSound");
       if (audio && src) {
@@ -1131,17 +1148,16 @@
       totalGuesses++;
 
       if (L === targetLetter) {
-        totalWins++;
-        feedback.textContent = `Yes! ${L} says /${L.toLowerCase()}/ like "${letterImages[L].word}".`;
+        feedback.textContent = `Yes! ${L} is the first letter in ${letterImages[L].word}.`;
         feedback.className = "feedback good";
         playSound("soundSuccess");
+        handleWin();
       } else {
         feedback.textContent = `That is ${L}. Listen and try another letter.`;
         feedback.className = "feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
-      renderPage(); // to update picture
     };
 
     window.resetLetterAndRender = function() {
