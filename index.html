@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <title>Kindergarten Number & Letter Adventure</title>
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+    html, body { height: 100%; margin: 0; }
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #ffe0f7, #e3f2fd);
@@ -15,11 +12,7 @@
       align-items: stretch;
       justify-content: stretch;
     }
-    .app {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+    .app { flex: 1; display: flex; flex-direction: column; }
     .page {
       flex: 1;
       display: flex;
@@ -29,19 +22,10 @@
       padding: 16px;
       text-align: center;
     }
-    h1 {
-      font-size: 26px;
-      margin: 4px 0 10px;
-      color: #6a1b9a;
-    }
-    h2 {
-      font-size: 22px;
-      margin: 8px 0;
-      color: #3949ab;
-    }
-    p {
-      margin: 4px 0;
-    }
+    h1 { font-size: 26px; margin: 4px 0 10px; color: #6a1b9a; }
+    h2 { font-size: 22px; margin: 8px 0; color: #3949ab; }
+    p { margin: 4px 0; }
+
     .big-number {
       font-size: 90px;
       font-weight: bold;
@@ -53,23 +37,10 @@
       background: linear-gradient(135deg, #ffe0b2, #ffccbc);
       border: 3px solid #ffab91;
     }
-    .word {
-      font-size: 22px;
-      margin-bottom: 10px;
-      text-transform: capitalize;
-      color: #5d4037;
-    }
-    .dots {
-      margin: 10px 0 8px;
-    }
-    .dot {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      margin: 4px;
-      border-radius: 50%;
-      background: #ffca28;
-    }
+    .word { font-size: 22px; margin-bottom: 10px; text-transform: capitalize; color: #5d4037; }
+    .dots { margin: 10px 0 8px; }
+    .dot { display: inline-block; width: 20px; height: 20px; margin: 4px; border-radius: 50%; background: #ffca28; }
+
     .nav {
       display: flex;
       justify-content: space-between;
@@ -86,10 +57,8 @@
       font-size: 14px;
       cursor: pointer;
     }
-    button:disabled {
-      background: #cfd8dc;
-      cursor: default;
-    }
+    button:disabled { background: #cfd8dc; cursor: default; }
+
     .pill {
       display: inline-block;
       padding: 4px 12px;
@@ -99,15 +68,8 @@
       color: #1976d2;
       margin-bottom: 8px;
     }
-    .tagline {
-      font-size: 15px;
-      color: #7e57c2;
-      margin-bottom: 6px;
-    }
-    .sequence-row {
-      font-size: 28px;
-      margin: 14px 0;
-    }
+    .tagline { font-size: 15px; color: #7e57c2; margin-bottom: 6px; }
+    .sequence-row { font-size: 28px; margin: 14px 0; }
     .num-input {
       width: 42px;
       height: 42px;
@@ -117,20 +79,11 @@
       font-size: 22px;
       margin: 0 4px;
     }
-    .feedback {
-      min-height: 22px;
-      font-size: 15px;
-      margin-top: 8px;
-    }
-    .good {
-      color: #2e7d32;
-    }
-    .bad {
-      color: #c62828;
-    }
-    .choices {
-      margin: 10px 0;
-    }
+    .feedback { min-height: 22px; font-size: 15px; margin-top: 8px; }
+    .good { color: #2e7d32; }
+    .bad { color: #c62828; }
+
+    .choices { margin: 10px 0; }
     .choice-btn {
       background: #fff3e0;
       color: #ef6c00;
@@ -142,12 +95,7 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .card-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 12px;
-    }
+    .card-row { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
     .card {
       width: 80px;
       height: 80px;
@@ -159,11 +107,8 @@
       background: #f3e5f5;
       cursor: pointer;
     }
-    .card span {
-      font-size: 30px;
-      color: #6a1b9a;
-      font-weight: bold;
-    }
+    .card span { font-size: 30px; color: #6a1b9a; font-weight: bold; }
+
     .home-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -181,11 +126,8 @@
       color: #1e88e5;
       cursor: pointer;
     }
-    .home-btn b {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
+    .home-btn b { display: block; font-size: 15px; margin-bottom: 4px; }
+
     .number-line {
       display: grid;
       grid-template-columns: repeat(10, minmax(0, 1fr));
@@ -209,22 +151,11 @@
       transition: transform 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s, opacity 0.15s;
       box-shadow: 0 2px 0 #bbdefb;
     }
-    .number-bubble.clicked {
-      border-color: #42a5f5;
-      background: #bbdefb;
-      transform: scale(1.12);
-      box-shadow: 0 3px 0 #90caf9;
-    }
-    .number-bubble.correct {
-      border-color: #2e7d32;
-      background: #c8e6c9;
-    }
-    .number-bubble.eliminated {
-      opacity: 0.25;
-    }
-    .guess-step-buttons {
-      margin-top: 8px;
-    }
+    .number-bubble.clicked { border-color: #42a5f5; background: #bbdefb; transform: scale(1.12); box-shadow: 0 3px 0 #90caf9; }
+    .number-bubble.correct { border-color: #2e7d32; background: #c8e6c9; }
+    .number-bubble.eliminated { opacity: 0.25; }
+
+    .guess-step-buttons { margin-top: 8px; }
     .step-btn {
       background: #fffde7;
       color: #f9a825;
@@ -236,23 +167,13 @@
       font-size: 13px;
       font-weight: bold;
     }
-    .step-btn.active {
-      background: #fff9c4;
-      border-color: #fbc02d;
-    }
-    .scramble-toggle {
-      margin-top: 6px;
-      font-size: 13px;
-      color: #455a64;
-    }
-    .scramble-toggle label {
-      cursor: pointer;
-    }
-    .stats {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #37474f;
-    }
+    .step-btn.active { background: #fff9c4; border-color: #fbc02d; }
+
+    .scramble-toggle { margin-top: 6px; font-size: 13px; color: #455a64; }
+    .scramble-toggle label { cursor: pointer; }
+
+    .stats { margin-top: 6px; font-size: 14px; color: #37474f; }
+
     .present-modal {
       position: fixed;
       top: 0;
@@ -272,19 +193,11 @@
       text-align: center;
       box-shadow: 0 6px 16px rgba(0,0,0,0.2);
     }
-    .present-emoji {
-      font-size: 48px;
-      margin-bottom: 8px;
-    }
-    .collection {
-      margin-top: 6px;
-      font-size: 18px;
-      color: #5d4037;
-    }
-    .collection span {
-      font-size: 26px;
-      margin: 0 4px;
-    }
+    .present-emoji { font-size: 48px; margin-bottom: 8px; }
+
+    .collection { margin-top: 6px; font-size: 18px; color: #5d4037; }
+    .collection span { font-size: 26px; margin: 0 4px; }
+
     /* Letter & vowel games */
     .letter-grid {
       display: grid;
@@ -303,25 +216,12 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .letter-icon {
-      font-size: 72px;
-      margin-top: 8px;
-    }
-    .case-toggle {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #455a64;
-    }
-    .case-toggle label {
-      cursor: pointer;
-      margin: 0 8px;
-    }
-    .vowel-grid {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 12px 0;
-    }
+    .letter-icon { font-size: 72px; margin-top: 8px; }
+
+    .case-toggle { margin-top: 8px; font-size: 13px; color: #455a64; }
+    .case-toggle label { cursor: pointer; margin: 0 8px; }
+
+    .vowel-grid { display: flex; justify-content: center; gap: 10px; margin: 12px 0; }
     .vowel-btn {
       background: #fff3e0;
       border-radius: 18px;
@@ -332,6 +232,7 @@
       cursor: pointer;
       min-width: 70px;
     }
+
     /* Unscramble game */
     .unscramble-letters {
       display: flex;
@@ -349,9 +250,7 @@
       cursor: pointer;
       background: #e3f2fd;
     }
-    .unscramble-letter-box.used {
-      opacity: 0.3;
-    }
+    .unscramble-letter-box.used { opacity: 0.3; }
     .unscramble-input {
       margin-top: 10px;
       font-size: 24px;
@@ -361,10 +260,8 @@
       text-align: center;
       width: 140px;
     }
-    .unscramble-emoji {
-      font-size: 72px;
-      margin-top: 10px;
-    }
+    .unscramble-emoji { font-size: 72px; margin-top: 10px; }
+
     /* WH words activity */
     .wh-grid {
       display: flex;
@@ -384,19 +281,9 @@
       cursor: pointer;
       min-width: 80px;
     }
-    .wh-display {
-      margin-top: 16px;
-      font-size: 20px;
-    }
-    .wh-big-word {
-      font-size: 34px;
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    .wh-emoji {
-      font-size: 48px;
-      margin-bottom: 4px;
-    }
+    .wh-display { margin-top: 16px; font-size: 20px; }
+    .wh-big-word { font-size: 34px; font-weight: bold; margin-bottom: 4px; }
+    .wh-emoji { font-size: 48px; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -438,14 +325,12 @@
       if (!modal) return;
       modal.style.display = "flex";
     }
-
     window.closePresentPopup = function() {
       const modal = document.getElementById("presentModal");
       if (!modal) return;
       modal.style.display = "none";
     };
 
-    // Fisher-Yates shuffle
     function shuffleArray(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
@@ -455,12 +340,10 @@
       return a;
     }
 
-    // Global scramble and stats
     let scrambleActivities = false;
     let totalGuesses = 0;
     let totalWins = 0;
 
-    // Gift collection as emoji icons
     const possibleGifts = ["🐶", "🐱", "🚗", "🚀", "🦕", "🦄"];
     let giftCollection = [];
 
@@ -485,67 +368,36 @@
 
     function handleWin() {
       totalWins++;
-      if (totalWins > 0 && totalWins % 5 === 0) { // gift every 5 wins[web:227]
+      if (totalWins > 0 && totalWins % 5 === 0) {
         awardGift();
         showPresentPopup();
       }
     }
 
-    // Words for numbers 1–10
-    const numberWords = [
-      "", "one","two","three","four",
-      "five","six","seven","eight","nine","ten"
-    ];
+    const numberWords = ["","one","two","three","four","five","six","seven","eight","nine","ten"];
+    const numberPages = Array.from({ length: 10 }, (_, i) => ({ type:"number", n:i+1 }));
 
-    // Number pages 1–10
-    const numberPages = Array.from({ length: 10 }, (_, i) => {
-      const n = i + 1;
-      return { type: "number", n };
-    });
-
-    // Missing-number sequences
     const missingPages = [
-      { sequence: [1, 2, null, 4], answers: [3] },
-      { sequence: [3, null, 5], answers: [4] },
-      { sequence: [3, null, 7], answers: [5] },
-      { sequence: [6, 7, null, 9, 10], answers: [8] },
-      { sequence: [2, null, 6, null, 10], answers: [4, 8] }
+      { sequence: [1,2,null,4], answers:[3] },
+      { sequence: [3,null,5], answers:[4] },
+      { sequence: [3,null,7], answers:[5] },
+      { sequence: [6,7,null,9,10], answers:[8] },
+      { sequence: [2,null,6,null,10], answers:[4,8] }
     ];
 
-    // Before / After / Between
     const relationPages = [
-      { mode: "before", shown: 5, answer: 4 },
-      { mode: "after", shown: 7, answer: 8 },
-      { mode: "between", left: 4, right: 6, answer: 5 }
+      { mode:"before", shown:5, answer:4 },
+      { mode:"after", shown:7, answer:8 },
+      { mode:"between", left:4, right:6, answer:5 }
     ];
 
-    // Extra games
     const extraPages = [
-      {
-        type: "match",
-        number: 4,
-        options: [2, 4, 6]
-      },
-      {
-        type: "nextNumber",
-        start: 3,
-        options: [2, 4, 5]
-      },
-      {
-        type: "finishSequence",
-        pattern: [1, 2, 3],
-        correctNext: 4,
-        choices: [4, 5, 6]
-      },
-      {
-        type: "cardPick",
-        displaySequence: [5, null, 7],
-        correct: 6,
-        cardOptions: [4, 6, 8]
-      }
+      { type:"match", number:4, options:[2,4,6] },
+      { type:"nextNumber", start:3, options:[2,4,5] },
+      { type:"finishSequence", pattern:[1,2,3], correctNext:4, choices:[4,5,6] },
+      { type:"cardPick", displaySequence:[5,null,7], correct:6, cardOptions:[4,6,8] }
     ];
 
-    // Guess My Number (1–20 visible)
     const guessMin = 0;
     const guessMax = 20;
     let guessStep = 1;
@@ -559,580 +411,409 @@
       eliminated = {};
     }
 
-    // Letter game – emoji icon for each letter
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const letterData = {
-      A: { word: "Apple", icon: "🍎" },
-      B: { word: "Bee", icon: "🐝" },
-      C: { word: "Cat", icon: "🐱" },
-      D: { word: "Dog", icon: "🐶" },
-      E: { word: "Egg", icon: "🥚" },
-      F: { word: "Fish", icon: "🐟" },
-      G: { word: "Goat", icon: "🐐" },
-      H: { word: "Hat", icon: "🎩" },
-      I: { word: "Igloo", icon: "🏔" },
-      J: { word: "Jam", icon: "🍓" },
-      K: { word: "Kite", icon: "🪁" },
-      L: { word: "Lion", icon: "🦁" },
-      M: { word: "Moon", icon: "🌙" },
-      N: { word: "Nest", icon: "🪺" },
-      O: { word: "Octopus", icon: "🐙" },
-      P: { word: "Pig", icon: "🐷" },
-      Q: { word: "Queen", icon: "👑" },
-      R: { word: "Rabbit", icon: "🐰" },
-      S: { word: "Sun", icon: "☀️" },
-      T: { word: "Truck", icon: "🚚" },
-      U: { word: "Umbrella", icon: "☔" },
-      V: { word: "Van", icon: "🚐" },
-      W: { word: "Whale", icon: "🐋" },
-      X: { word: "Box (X)", icon: "📦" },
-      Y: { word: "Yarn", icon: "🧶" },
-      Z: { word: "Zebra", icon: "🦓" }
+      A:{ word:"Apple", icon:"🍎" }, B:{ word:"Bee", icon:"🐝" }, C:{ word:"Cat", icon:"🐱" },
+      D:{ word:"Dog", icon:"🐶" }, E:{ word:"Egg", icon:"🥚" }, F:{ word:"Fish", icon:"🐟" },
+      G:{ word:"Goat", icon:"🐐" }, H:{ word:"Hat", icon:"🎩" }, I:{ word:"Igloo", icon:"🏔" },
+      J:{ word:"Jam", icon:"🍓" }, K:{ word:"Kite", icon:"🪁" }, L:{ word:"Lion", icon:"🦁" },
+      M:{ word:"Moon", icon:"🌙" }, N:{ word:"Nest", icon:"🪺" }, O:{ word:"Octopus", icon:"🐙" },
+      P:{ word:"Pig", icon:"🐷" }, Q:{ word:"Queen", icon:"👑" }, R:{ word:"Rabbit", icon:"🐰" },
+      S:{ word:"Sun", icon:"☀️" }, T:{ word:"Truck", icon:"🚚" }, U:{ word:"Umbrella", icon:"☔" },
+      V:{ word:"Van", icon:"🚐" }, W:{ word:"Whale", icon:"🐋" }, X:{ word:"Box (X)", icon:"📦" },
+      Y:{ word:"Yarn", icon:"🧶" }, Z:{ word:"Zebra", icon:"🦓" }
     };
-    const letterSoundUrls = letters.reduce((acc, L) => {
-      acc[L] = "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";
-      return acc;
-    }, {});
-    let targetLetter = letters[Math.floor(Math.random() * letters.length)];
+    const letterSoundUrls = letters.reduce((acc,L)=>{acc[L]="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";return acc;}, {});
+    let targetLetter = letters[Math.floor(Math.random()*letters.length)];
     let letterUppercase = true;
+    function resetLetterGame(){ targetLetter = letters[Math.floor(Math.random()*letters.length)]; }
 
-    function resetLetterGame() {
-      targetLetter = letters[Math.floor(Math.random() * letters.length)];
-    }
-
-    // Vowel sound game – many items, vowel can be middle or elsewhere[web:233]
-    const vowels = ["A", "E", "I", "O", "U"];
+    const vowels = ["A","E","I","O","U"];
     const vowelItems = [
-      // short A
-      { vowel: "A", icon: "🍎", hint: "apple" },
-      { vowel: "A", icon: "🐱", hint: "cat" },
-      { vowel: "A", icon: "👒", hint: "hat" },
-      // short E
-      { vowel: "E", icon: "🛏️", hint: "bed" },
-      { vowel: "E", icon: "🟥", hint: "red" },
-      { vowel: "E", icon: "🎾", hint: "net" },
-      // short I
-      { vowel: "I", icon: "🐷", hint: "pig" },
-      { vowel: "I", icon: "👄", hint: "lip" },
-      { vowel: "I", icon: "🪑", hint: "sit (chair)" },
-      // short O
-      { vowel: "O", icon: "🐶", hint: "dog" },
-      { vowel: "O", icon: "🪵", hint: "log" },
-      { vowel: "O", icon: "📦", hint: "box" },
-      // short U
-      { vowel: "U", icon: "☀️", hint: "sun" },
-      { vowel: "U", icon: "☕", hint: "cup" },
-      { vowel: "U", icon: "🐞", hint: "bug" }
+      { vowel:"A", icon:"🍎", hint:"apple" },
+      { vowel:"A", icon:"🐱", hint:"cat" },
+      { vowel:"A", icon:"👒", hint:"hat" },
+      { vowel:"E", icon:"🛏️", hint:"bed" },
+      { vowel:"E", icon:"🟥", hint:"red" },
+      { vowel:"E", icon:"🎾", hint:"net" },
+      { vowel:"I", icon:"🐷", hint:"pig" },
+      { vowel:"I", icon:"👄", hint:"lip" },
+      { vowel:"I", icon:"🪑", hint:"sit" },
+      { vowel:"O", icon:"🐶", hint:"dog" },
+      { vowel:"O", icon:"🪵", hint:"log" },
+      { vowel:"O", icon:"📦", hint:"box" },
+      { vowel:"U", icon:"☀️", hint:"sun" },
+      { vowel:"U", icon:"☕", hint:"cup" },
+      { vowel:"U", icon:"🐞", hint:"bug" }
     ];
-    let targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
+    let targetVowelItem = vowelItems[Math.floor(Math.random()*vowelItems.length)];
     let vowelUppercase = true;
+    function resetVowelGame(){ targetVowelItem = vowelItems[Math.floor(Math.random()*vowelItems.length)]; }
 
-    function resetVowelGame() {
-      targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
-    }
-
-    // Unscramble game – simple CVC words, no emojis in letters[web:227]
     const unscrambleWords = ["cat","dog","sun","pig","hat","bed","log","bug","cup","map"];
     const unscrambleWordEmoji = {
-      cat: "🐱",
-      dog: "🐶",
-      sun: "☀️",
-      pig: "🐷",
-      hat: "👒",
-      bed: "🛏️",
-      log: "🪵",
-      bug: "🐞",
-      cup: "☕",
-      map: "🗺️"
+      cat:"🐱", dog:"🐶", sun:"☀️", pig:"🐷", hat:"👒", bed:"🛏️", log:"🪵", bug:"🐞", cup:"☕", map:"🗺️"
     };
-    let currentUnscramble = pickUnscramble();
+    let currentUnscramble = null;
     let currentUnscrambleInput = "";
+    let currentUnscrambleUsed = [];
 
-    function shuffleString(str) {
-      return shuffleArray(str.split("")).join("");
-    }
-
-    function pickUnscramble() {
-      const word = unscrambleWords[Math.floor(Math.random() * unscrambleWords.length)];
+    function shuffleString(str){ return shuffleArray(str.split("")).join(""); }
+    function pickUnscramble(){
+      const word = unscrambleWords[Math.floor(Math.random()*unscrambleWords.length)];
       let scrambled = shuffleString(word);
       if (scrambled === word) scrambled = shuffleString(word);
       currentUnscrambleInput = "";
-      return { word, scrambled, used: [false,false,false] };
+      currentUnscrambleUsed = Array(scrambled.length).fill(false);
+      currentUnscramble = { word, scrambled };
     }
+    pickUnscramble();
 
-    // WH words activity – who what when where why how[web:236][web:239]
     const whItems = [
-      { word: "Who", emoji: "🧑‍🤝‍🧑", hint: "a person" },
-      { word: "What", emoji: "📦", hint: "a thing" },
-      { word: "When", emoji: "⏰", hint: "a time" },
-      { word: "Where", emoji: "📍", hint: "a place" },
-      { word: "Why", emoji: "❓", hint: "a reason" },
-      { word: "How", emoji: "🛠️", hint: "a way" }
+      { word:"Who", emoji:"🧑‍🤝‍🧑", hint:"a person" },
+      { word:"What", emoji:"📦", hint:"a thing" },
+      { word:"When", emoji:"⏰", hint:"a time" },
+      { word:"Where", emoji:"📍", hint:"a place" },
+      { word:"Why", emoji:"❓", hint:"a reason" },
+      { word:"How", emoji:"🛠️", hint:"a way" }
     ];
     let currentWh = whItems[0];
 
-    // Build page list
     const pages = [];
-    pages.push({ type: "home" });
+    pages.push({ type:"home" });
 
-    pages.push({ type: "sectionHeader", title: "Numbers 1–10" });
-    numberPages.forEach(p => pages.push(p));
+    pages.push({ type:"sectionHeader", title:"Numbers 1–10" });
+    numberPages.forEach(p=>pages.push(p));
 
-    pages.push({ type: "sectionHeader", title: "Missing Numbers" });
-    missingPages.forEach((item, index) => {
-      pages.push({ type: "missing", data: item, id: "missing_" + index });
-    });
+    pages.push({ type:"sectionHeader", title:"Missing Numbers" });
+    missingPages.forEach((item,i)=>pages.push({ type:"missing", data:item, id:"missing_"+i }));
 
-    pages.push({ type: "sectionHeader", title: "Before, After & Between" });
-    relationPages.forEach((item, index) => {
-      pages.push({ type: "relation", data: item, id: "relation_" + index });
-    });
+    pages.push({ type:"sectionHeader", title:"Before, After & Between" });
+    relationPages.forEach((item,i)=>pages.push({ type:"relation", data:item, id:"relation_"+i }));
 
-    pages.push({ type: "sectionHeader", title: "Fun Number Games" });
-    extraPages.forEach((item, index) => {
-      pages.push({ type: item.type, data: item, id: "extra_" + index });
-    });
+    pages.push({ type:"sectionHeader", title:"Fun Number Games" });
+    extraPages.forEach((item,i)=>pages.push({ type:item.type, data:item, id:"extra_"+i }));
 
-    pages.push({ type: "sectionHeader", title: "Guess My Number (1–20)" });
-    pages.push({ type: "guessNumber", id: "guess_1" });
+    pages.push({ type:"sectionHeader", title:"Guess My Number (1–20)" });
+    pages.push({ type:"guessNumber", id:"guess_1" });
 
-    pages.push({ type: "sectionHeader", title: "Guess the Letter" });
-    pages.push({ type: "letterGame", id: "letter_1" });
+    pages.push({ type:"sectionHeader", title:"Guess the Letter" });
+    pages.push({ type:"letterGame", id:"letter_1" });
 
-    pages.push({ type: "sectionHeader", title: "Vowel Sounds" });
-    pages.push({ type: "vowelGame", id: "vowel_1" });
+    pages.push({ type:"sectionHeader", title:"Vowel Sounds" });
+    pages.push({ type:"vowelGame", id:"vowel_1" });
 
-    pages.push({ type: "sectionHeader", title: "Unscramble the Word" });
-    pages.push({ type: "unscrambleGame", id: "unscramble_1" });
+    pages.push({ type:"sectionHeader", title:"Unscramble the Word" });
+    pages.push({ type:"unscrambleGame", id:"unscramble_1" });
 
-    pages.push({ type: "sectionHeader", title: "Who / What / When / Where / Why / How" });
-    pages.push({ type: "whGame", id: "wh_1" });
+    pages.push({ type:"sectionHeader", title:"Who / What / When / Where / Why / How" });
+    pages.push({ type:"whGame", id:"wh_1" });
 
-    pages.push({ type: "prizeCollection" });
-
-    pages.push({ type: "finish" });
+    pages.push({ type:"prizeCollection" });
+    pages.push({ type:"finish" });
 
     let currentPage = 0;
-
     const pageDiv = document.getElementById("page");
     const homeBtn = document.getElementById("homeBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
-    function firstIndexOfType(type) {
-      return pages.findIndex(p => p.type === type);
-    }
+    function firstIndexOfType(type){ return pages.findIndex(p=>p.type===type); }
 
-    // Number line for activities: 1–10, ordered or scrambled
-    function renderActivityNumberLine() {
+    function renderActivityNumberLine(){
       const base = [1,2,3,4,5,6,7,8,9,10];
       const nums = scrambleActivities ? shuffleArray(base) : base;
       return `
         <div class="number-line">
-          ${nums.map(num => `
-            <div
-              class="number-bubble"
-              data-activity-num="${num}"
-              onclick="clickActivityBubble(${num})"
-            >${num}</div>
+          ${nums.map(num=>`
+            <div class="number-bubble" data-activity-num="${num}"
+                 onclick="clickActivityBubble(${num})">${num}</div>
           `).join("")}
         </div>
         <div class="scramble-toggle">
           <label>
-            <input type="checkbox" id="scrambleToggle" ${scrambleActivities ? "checked" : ""} onchange="toggleScramble()" />
+            <input type="checkbox" id="scrambleToggle" ${scrambleActivities?"checked":""}
+                   onchange="toggleScramble()" />
             Scramble numbers
           </label>
-        </div>
-      `;
+        </div>`;
     }
 
-    function renderPage() {
+    function renderPage(){
       const p = pages[currentPage];
       let html = "";
 
-      if (p.type === "home") {
+      if (p.type==="home"){
         html += `
           <h1>My Number & Letter Adventure</h1>
           <div class="tagline">Tap a button to choose your game.</div>
           <div class="home-grid">
-            <button class="home-btn" onclick="goToSection('number')">
-              <b>Numbers 1–10</b>
-              Learn each number
-            </button>
-            <button class="home-btn" onclick="goToSection('missing')">
-              <b>Missing Numbers</b>
-              Fill in blanks
-            </button>
-            <button class="home-btn" onclick="goToSection('relation')">
-              <b>Before / After</b>
-              Number line help
-            </button>
-            <button class="home-btn" onclick="goToSection('games')">
-              <b>Number Games</b>
-              Matching & patterns
-            </button>
-            <button class="home-btn" onclick="goToSection('guess')">
-              <b>Guess My Number</b>
-              1–20 higher / lower
-            </button>
-            <button class="home-btn" onclick="goToSection('letter')">
-              <b>Guess the Letter</b>
-              Emoji & sounds
-            </button>
-            <button class="home-btn" onclick="goToSection('vowel')">
-              <b>Vowel Sounds</b>
-              Guess the vowel
-            </button>
-            <button class="home-btn" onclick="goToSection('unscramble')">
-              <b>Unscramble</b>
-              Build the word
-            </button>
-            <button class="home-btn" onclick="goToSection('wh')">
-              <b>Who / What / When...</b>
-              Question words
-            </button>
-            <button class="home-btn" onclick="goToSection('prizes')">
-              <b>Prize Collection</b>
-              See your gifts
-            </button>
+            <button class="home-btn" onclick="goToSection('number')"><b>Numbers 1–10</b>Learn each number</button>
+            <button class="home-btn" onclick="goToSection('missing')"><b>Missing Numbers</b>Fill in blanks</button>
+            <button class="home-btn" onclick="goToSection('relation')"><b>Before / After</b>Number line help</button>
+            <button class="home-btn" onclick="goToSection('games')"><b>Number Games</b>Matching & patterns</button>
+            <button class="home-btn" onclick="goToSection('guess')"><b>Guess My Number</b>1–20 higher / lower</button>
+            <button class="home-btn" onclick="goToSection('letter')"><b>Guess the Letter</b>Emoji & sounds</button>
+            <button class="home-btn" onclick="goToSection('vowel')"><b>Vowel Sounds</b>Guess the vowel</button>
+            <button class="home-btn" onclick="goToSection('unscramble')"><b>Unscramble</b>Build the word</button>
+            <button class="home-btn" onclick="goToSection('wh')"><b>Who / What / When...</b>Question words</button>
+            <button class="home-btn" onclick="goToSection('prizes')"><b>Prize Collection</b>See your gifts</button>
           </div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "number") {
+      if (p.type==="number"){
         const n = p.n;
         html += `
           <div class="pill">Number ${n}</div>
           <h2>This is number</h2>
           <div class="big-number">${n}</div>
           <div class="word">${numberWords[n]}</div>
-          <div class="dots">
-            ${"<span class='dot'></span>".repeat(n)}
-          </div>
+          <div class="dots">${"<span class='dot'></span>".repeat(n)}</div>
           <p>Say the number out loud, then count the dots together.</p>
           <p>Tap a number on the line that matches this page.</p>
           ${renderActivityNumberLine()}
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "sectionHeader") {
+      if (p.type==="sectionHeader"){
         html += `
           <h1>${p.title}</h1>
-          <p class="tagline">Get ready for a new kind of game!</p>
-        `;
-        if (
-          !p.title.startsWith("Guess My Number") &&
-          !p.title.startsWith("Guess the Letter") &&
-          !p.title.startsWith("Vowel") &&
-          !p.title.startsWith("Unscramble") &&
-          !p.title.startsWith("Who")
-        ) {
+          <p class="tagline">Get ready for a new kind of game!</p>`;
+        if (!p.title.startsWith("Guess My Number") &&
+            !p.title.startsWith("Guess the Letter") &&
+            !p.title.startsWith("Vowel") &&
+            !p.title.startsWith("Unscramble") &&
+            !p.title.startsWith("Who")){
           html += renderActivityNumberLine();
           html += `<div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div><div class="collection"></div>`;
         }
       }
 
-      if (p.type === "missing") {
+      if (p.type==="missing"){
         const seq = p.data.sequence;
         const id = p.id;
         html += `
           <div class="pill">Missing Number</div>
           <h2>Say the numbers out loud, then fill the box.</h2>
-          <div class="sequence-row">
-        `;
-        seq.forEach((num, i) => {
-          if (num === null) {
-            html += `<input class="num-input" maxlength="2" id="${id}_i${i}" />`;
-          } else {
-            html += `<span>${num}</span>`;
-          }
-          if (i < seq.length - 1) html += " , ";
+          <div class="sequence-row">`;
+        seq.forEach((num,i)=>{
+          if (num===null) html += `<input class="num-input" maxlength="2" id="${id}_i${i}" />`;
+          else html += `<span>${num}</span>`;
+          if (i<seq.length-1) html += " , ";
         });
-        html += `
-          </div>
+        html += `</div>
           <p>Tap numbers on the line and see if they could fit.</p>
           ${renderActivityNumberLine()}
           <p>Hint: Count in order and listen for the number that is missing.</p>
           <button onclick="checkMissing('${id}')">Check</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "relation") {
+      if (p.type==="relation"){
         const d = p.data;
         const id = p.id;
-        let prompt = "";
-        let sequenceHtml = "";
-
-        if (d.mode === "before") {
-          prompt = "What number comes before?";
-          sequenceHtml = `<input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.shown}</span>`;
-        } else if (d.mode === "after") {
-          prompt = "What number comes after?";
-          sequenceHtml = `<span>${d.shown}</span> , <input class="num-input" id="${id}_in" maxlength="2" />`;
+        let prompt="", seqHtml="";
+        if (d.mode==="before"){
+          prompt="What number comes before?";
+          seqHtml=`<input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.shown}</span>`;
+        } else if (d.mode==="after"){
+          prompt="What number comes after?";
+          seqHtml=`<span>${d.shown}</span> , <input class="num-input" id="${id}_in" maxlength="2" />`;
         } else {
-          prompt = "What number goes between?";
-          sequenceHtml = `<span>${d.left}</span> , <input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.right}</span>`;
+          prompt="What number goes between?";
+          seqHtml=`<span>${d.left}</span> , <input class="num-input" id="${id}_in" maxlength="2" /> , <span>${d.right}</span>`;
         }
-
         html += `
-          <div class="pill">${d.mode[0].toUpperCase() + d.mode.slice(1)}</div>
+          <div class="pill">${d.mode[0].toUpperCase()+d.mode.slice(1)}</div>
           <h2>${prompt}</h2>
-          <div class="sequence-row">${sequenceHtml}</div>
+          <div class="sequence-row">${seqHtml}</div>
           <p>Click a number on the line to put it in the box.</p>
           ${renderActivityNumberLine()}
           <button onclick="checkRelation('${id}')">Check</button>
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "match") {
-        const d = p.data;
-        const id = p.id;
+      if (p.type==="match"){
+        const d = p.data, id=p.id;
         html += `
           <div class="pill">Match</div>
           <h2>Which number matches these dots?</h2>
-          <div class="dots">
-            ${"<span class='dot'></span>".repeat(d.number)}
-          </div>
+          <div class="dots">${"<span class='dot'></span>".repeat(d.number)}</div>
           <p>Count the dots out loud. Then choose the right number.</p>
           <div class="choices">
-            ${d.options.map(o => `
-              <button class="choice-btn" onclick="checkChoice('${id}', ${o})">${o}</button>
-            `).join("")}
+            ${d.options.map(o=>`<button class="choice-btn" onclick="checkChoice('${id}',${o})">${o}</button>`).join("")}
           </div>
           <p>Tap the matching number on the line too.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "nextNumber") {
-        const d = p.data;
-        const id = p.id;
+      if (p.type==="nextNumber"){
+        const d=p.data, id=p.id;
         html += `
           <div class="pill">Next Number</div>
           <h2>What comes after ${d.start}?</h2>
           <div class="sequence-row">${d.start} , ?</div>
           <p>Start at ${d.start} and count on together.</p>
           <div class="choices">
-            ${d.options.map(o => `
-              <button class="choice-btn" onclick="checkNext('${id}', ${o})">${o}</button>
-            `).join("")}
+            ${d.options.map(o=>`<button class="choice-btn" onclick="checkNext('${id}',${o})">${o}</button>`).join("")}
           </div>
-          <p>Find ${d.start + 1} on the number line.</p>
+          <p>Find ${d.start+1} on the number line.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "finishSequence") {
-        const d = p.data;
-        const id = p.id;
+      if (p.type==="finishSequence"){
+        const d=p.data, id=p.id;
         html += `
           <div class="pill">Finish the Sequence</div>
           <h2>What comes next?</h2>
-          <div class="sequence-row">
-            ${d.pattern.join(" , ")} , __
-          </div>
+          <div class="sequence-row">${d.pattern.join(" , ")} , __</div>
           <p>Say the pattern together: ${d.pattern.join(", ")} ...?</p>
           <div class="choices">
-            ${d.choices.map(o => `
-              <button class="choice-btn" onclick="checkFinish('${id}', ${o})">${o}</button>
-            `).join("")}
+            ${d.choices.map(o=>`<button class="choice-btn" onclick="checkFinish('${id}',${o})">${o}</button>`).join("")}
           </div>
           <p>Tap the number on the line that you think comes next.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "cardPick") {
-        const d = p.data;
-        const id = p.id;
-        const seq = d.displaySequence;
+      if (p.type==="cardPick"){
+        const d=p.data, id=p.id, seq=d.displaySequence;
         html += `
           <div class="pill">Number Cards</div>
           <h2>Pick the missing number card</h2>
-          <div class="sequence-row">
-        `;
-        seq.forEach((num, i) => {
-          if (num === null) {
-            html += `<span>__</span>`;
-          } else {
-            html += `<span>${num}</span>`;
-          }
-          if (i < seq.length - 1) html += " , ";
+          <div class="sequence-row">`;
+        seq.forEach((num,i)=>{
+          html += num===null ? "<span>__</span>" : `<span>${num}</span>`;
+          if (i<seq.length-1) html += " , ";
         });
-        html += `
-          </div>
+        html += `</div>
           <p>Say the numbers you see, then choose the card that fits.</p>
           <div class="card-row">
-            ${d.cardOptions.map(o => `
-              <div class="card" onclick="checkCard('${id}', ${o})">
-                <span>${o}</span>
-              </div>
-            `).join("")}
+            ${d.cardOptions.map(o=>`<div class="card" onclick="checkCard('${id}',${o})"><span>${o}</span></div>`).join("")}
           </div>
           <p>Tap the same number on the number line.</p>
           ${renderActivityNumberLine()}
           <div id="${id}_feedback" class="feedback"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "guessNumber") {
-        if (secretNumber === null) {
-          resetGuessGame();
-        }
-        const numbers = [];
-        if (guessStep === 1) {
-          for (let n = 1; n <= guessMax; n += 1) numbers.push(n);
-        } else if (guessStep === 2) {
-          for (let n = 2; n <= guessMax; n += 2) numbers.push(n);
-        } else {
-          for (let n = 3; n <= guessMax; n += 3) numbers.push(n);
-        }
+      if (p.type==="guessNumber"){
+        if (secretNumber===null) resetGuessGame();
+        const nums=[];
+        if (guessStep===1) for(let n=1;n<=guessMax;n++) nums.push(n);
+        else if (guessStep===2) for(let n=2;n<=guessMax;n+=2) nums.push(n);
+        else for(let n=3;n<=guessMax;n+=3) nums.push(n);
         html += `
           <div class="pill">Guess My Number</div>
           <h2>I’m thinking of a number between 1 and ${guessMax}</h2>
           <p>Tap a number. I’ll tell you if my secret number is higher or lower.</p>
           <div class="guess-step-buttons">
-            <button class="step-btn ${guessStep === 1 ? 'active' : ''}" onclick="setGuessStep(1)">Count by 1s (1,2,3…)</button>
-            <button class="step-btn ${guessStep === 2 ? 'active' : ''}" onclick="setGuessStep(2)">Count by 2s (2,4,6…)</button>
-            <button class="step-btn ${guessStep === 3 ? 'active' : ''}" onclick="setGuessStep(3)">Count by 3s (3,6,9…)</button>
+            <button class="step-btn ${guessStep===1?'active':''}" onclick="setGuessStep(1)">Count by 1s (1,2,3…)</button>
+            <button class="step-btn ${guessStep===2?'active':''}" onclick="setGuessStep(2)">Count by 2s (2,4,6…)</button>
+            <button class="step-btn ${guessStep===3?'active':''}" onclick="setGuessStep(3)">Count by 3s (3,6,9…)</button>
           </div>
           <div class="number-line">
-            ${numbers.map(num => {
-              const extraClass = eliminated[num] ? " eliminated" : "";
-              return `
-                <div
-                  class="number-bubble${extraClass}"
-                  data-num="${num}"
-                  onclick="clickGuessBubble(${num})"
-                >${num}</div>
-              `;
+            ${nums.map(num=>{
+              const extra = eliminated[num] ? " eliminated" : "";
+              return `<div class="number-bubble${extra}" data-num="${num}" onclick="clickGuessBubble(${num})">${num}</div>`;
             }).join("")}
           </div>
           <div id="guessFeedback" class="feedback">${guessMessage}</div>
           <button onclick="resetGuessAndRender()">New Secret Number</button>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "letterGame") {
+      if (p.type==="letterGame"){
         const info = letterData[targetLetter];
-        const labelLetters = letterUppercase ? letters : letters.map(l => l.toLowerCase());
+        const labels = letterUppercase ? letters : letters.map(l=>l.toLowerCase());
         html += `
           <div class="pill">Guess the Letter</div>
           <h2>What letter does this start with?</h2>
           <p>Look at the picture, listen to the sound, and tap the matching letter.</p>
           <div class="letter-icon">${info.icon}</div>
           <div class="case-toggle">
-            <label>
-              <input type="radio" name="letterCase" value="upper" ${letterUppercase ? "checked" : ""} onclick="setLetterCase(true)" />
-              Uppercase
-            </label>
-            <label>
-              <input type="radio" name="letterCase" value="lower" ${!letterUppercase ? "checked" : ""} onclick="setLetterCase(false)" />
-              Lowercase
-            </label>
+            <label><input type="radio" name="letterCase" ${letterUppercase?"checked":""} onclick="setLetterCase(true)" /> Uppercase</label>
+            <label><input type="radio" name="letterCase" ${!letterUppercase?"checked":""} onclick="setLetterCase(false)" /> Lowercase</label>
           </div>
           <div class="letter-grid">
-            ${labelLetters.map(L => `
-              <button class="letter-btn" onclick="clickLetter('${L}')">${L}</button>
-            `).join("")}
+            ${labels.map(L=>`<button class="letter-btn" onclick="clickLetter('${L}')">${L}</button>`).join("")}
           </div>
           <div id="letterFeedback" class="feedback"></div>
           <button onclick="resetLetterAndRender()">New Picture</button>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "vowelGame") {
+      if (p.type==="vowelGame"){
         const item = targetVowelItem;
-        const labelVowels = vowelUppercase ? vowels : vowels.map(v => v.toLowerCase());
+        const labels = vowelUppercase ? vowels : vowels.map(v=>v.toLowerCase());
         html += `
           <div class="pill">Vowel Sounds</div>
           <h2>Which vowel sound do you hear?</h2>
           <p>Look at the picture and tap the vowel you think it uses.</p>
           <div class="letter-icon">${item.icon}</div>
           <div class="case-toggle">
-            <label>
-              <input type="radio" name="vowelCase" value="upper" ${vowelUppercase ? "checked" : ""} onclick="setVowelCase(true)" />
-              Uppercase
-            </label>
-            <label>
-              <input type="radio" name="vowelCase" value="lower" ${!vowelUppercase ? "checked" : ""} onclick="setVowelCase(false)" />
-              Lowercase
-            </label>
+            <label><input type="radio" name="vowelCase" ${vowelUppercase?"checked":""} onclick="setVowelCase(true)" /> Uppercase</label>
+            <label><input type="radio" name="vowelCase" ${!vowelUppercase?"checked":""} onclick="setVowelCase(false)" /> Lowercase</label>
           </div>
           <div class="vowel-grid">
-            ${labelVowels.map(V => `
-              <button class="vowel-btn" onclick="clickVowel('${V}')">${V}</button>
-            `).join("")}
+            ${labels.map(V=>`<button class="vowel-btn" onclick="clickVowel('${V}')">${V}</button>`).join("")}
           </div>
           <div id="vowelFeedback" class="feedback"></div>
           <button onclick="resetVowelAndRender()">New Vowel Picture</button>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "unscrambleGame") {
+      if (p.type==="unscrambleGame"){
         html += `
           <div class="pill">Unscramble</div>
           <h2>Unscramble the word</h2>
           <p>Tap the letters to build the word.</p>
           <div class="unscramble-letters">
-            ${currentUnscramble.scrambled.split("").map((ch, idx) => `
-              <div class="unscramble-letter-box" data-idx="${idx}" onclick="clickUnscrambleLetter(${idx})">${ch}</div>
-            `).join("")}
+            ${currentUnscramble.scrambled.split("").map((ch,idx)=>`
+              <div class="unscramble-letter-box ${currentUnscrambleUsed[idx]?"used":""}"
+                   onclick="clickUnscrambleLetter(${idx})">${ch}</div>`).join("")}
           </div>
-          <input id="unscrambleInput" class="unscramble-input" maxlength="3" value="${currentUnscrambleInput.toUpperCase()}" readonly />
+          <input id="unscrambleInput" class="unscramble-input" maxlength="3"
+                 value="${currentUnscrambleInput.toUpperCase()}" readonly />
           <div>
             <button onclick="checkUnscramble()">Check</button>
             <button onclick="newUnscramble()">New Word</button>
             <button onclick="clearUnscramble()">Clear</button>
           </div>
           <div id="unscrambleFeedback" class="feedback"></div>
-          <div id="unscrambleEmoji" class="unscramble-emoji"></div>
+          <div id="unscrambleEmoji" class="unscramble-emoji">
+            ${unscrambleWordEmoji[currentUnscramble.word] && currentUnscrambleInput.toLowerCase()===currentUnscramble.word ? unscrambleWordEmoji[currentUnscramble.word] : ""}
+          </div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
-        // mark used letters if any
-        const boxes = document.querySelectorAll(".unscramble-letter-box");
-        currentUnscramble.used.forEach((u, i) => {
-          if (u && boxes[i]) boxes[i].classList.add("used");
-        });
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "whGame") {
+      if (p.type==="whGame"){
         html += `
           <div class="pill">Question Words</div>
           <h2>Tap a word to make it big!</h2>
           <p>These words help us ask questions.</p>
           <div class="wh-grid">
-            ${whItems.map(item => `
-              <button class="wh-btn" onclick="clickWh('${item.word}')">${item.word}</button>
-            `).join("")}
+            ${whItems.map(it=>`<button class="wh-btn" onclick="clickWh('${it.word}')">${it.word}</button>`).join("")}
           </div>
           <div class="wh-display">
             <div class="wh-emoji">${currentWh.emoji}</div>
@@ -1140,424 +821,306 @@
             <p>${currentWh.word} asks about ${currentWh.hint}.</p>
           </div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
-      if (p.type === "prizeCollection") {
+      if (p.type==="prizeCollection"){
         html += `
           <h1>Your Prize Collection</h1>
           <p class="tagline">See all the fun things you’ve won!</p>
           <div class="collection"></div>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <p>Tap Home to play more games and win more prizes.</p>
-        `;
+          <p>Tap Home to play more games and win more prizes.</p>`;
       }
 
-      if (p.type === "finish") {
+      if (p.type==="finish"){
         html += `
           <h1>Yay! You did it!</h1>
           <p class="tagline">You played with numbers and letters, and collected fun gifts!</p>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
-          <div class="collection"></div>
-        `;
+          <div class="collection"></div>`;
       }
 
       pageDiv.innerHTML = html;
-
-      if (p.type === "guessNumber") {
-        Object.keys(eliminated).forEach(n => {
-          const el = document.querySelector('.number-bubble[data-num="' + n + '"]');
-          if (el) el.classList.add("eliminated");
-        });
-      }
-
       updateStatsDisplay();
     }
 
-    // Toggle scramble for activity number lines
-    window.toggleScramble = function() {
-      scrambleActivities = !scrambleActivities;
-      renderPage();
-    };
+    window.toggleScramble = function(){ scrambleActivities=!scrambleActivities; renderPage(); };
 
-    // Activity bubbles
-    window.clickActivityBubble = function(num) {
+    window.clickActivityBubble = function(num){
       const bubbles = document.querySelectorAll(".number-bubble[data-activity-num]");
-      bubbles.forEach(b => b.classList.remove("clicked"));
-      const bubble = document.querySelector('.number-bubble[data-activity-num="' + num + '"]');
+      bubbles.forEach(b=>b.classList.remove("clicked"));
+      const bubble = document.querySelector(`.number-bubble[data-activity-num="${num}"]`);
       if (bubble) bubble.classList.add("clicked");
-
       const p = pages[currentPage];
-      if (p.type === "relation") {
-        const id = p.id;
-        const input = document.getElementById(id + "_in");
+      if (p.type==="relation"){
+        const input = document.getElementById(p.id+"_in");
         if (input) input.value = String(num);
       }
     };
 
-    // Navigation from home (no sound)
-    window.goToSection = function(section) {
-      let targetIndex = 0;
-      if (section === "number") {
-        targetIndex = firstIndexOfType("number");
-      } else if (section === "missing") {
-        targetIndex = firstIndexOfType("missing");
-      } else if (section === "relation") {
-        targetIndex = firstIndexOfType("relation");
-      } else if (section === "games") {
-        targetIndex = firstIndexOfType("match");
-      } else if (section === "guess") {
-        targetIndex = firstIndexOfType("guessNumber");
-      } else if (section === "letter") {
-        targetIndex = firstIndexOfType("letterGame");
-      } else if (section === "vowel") {
-        targetIndex = firstIndexOfType("vowelGame");
-      } else if (section === "unscramble") {
-        targetIndex = firstIndexOfType("unscrambleGame");
-      } else if (section === "wh") {
-        targetIndex = firstIndexOfType("whGame");
-      } else if (section === "prizes") {
-        targetIndex = firstIndexOfType("prizeCollection");
-      }
-      if (targetIndex >= 0) {
-        currentPage = targetIndex;
-        renderPage();
-      }
+    window.goToSection = function(section){
+      let idx = 0;
+      if (section==="number") idx = firstIndexOfType("number");
+      else if (section==="missing") idx = firstIndexOfType("missing");
+      else if (section==="relation") idx = firstIndexOfType("relation");
+      else if (section==="games") idx = firstIndexOfType("match");
+      else if (section==="guess") idx = firstIndexOfType("guessNumber");
+      else if (section==="letter") idx = firstIndexOfType("letterGame");
+      else if (section==="vowel") idx = firstIndexOfType("vowelGame");
+      else if (section==="unscramble") idx = firstIndexOfType("unscrambleGame");
+      else if (section==="wh") idx = firstIndexOfType("whGame");
+      else if (section==="prizes") idx = firstIndexOfType("prizeCollection");
+      if (idx>=0){ currentPage=idx; renderPage(); }
     };
 
-    // Check functions
-    window.checkMissing = function(id) {
-      const page = pages.find(p => p.id === id);
+    // check functions
+    window.checkMissing = function(id){
+      const page = pages.find(p=>p.id===id);
       const data = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-      const seq = data.sequence;
-      const expectedAnswers = data.answers;
-
-      const inputs = [];
-      seq.forEach((num, i) => {
-        if (num === null) {
-          const el = document.getElementById(id + "_i" + i);
-          if (el) inputs.push(parseInt(el.value, 10));
+      const fb = document.getElementById(id+"_feedback");
+      const seq = data.sequence, expected = data.answers;
+      const inputs=[];
+      seq.forEach((n,i)=>{
+        if (n===null){
+          const el = document.getElementById(id+"_i"+i);
+          if (el) inputs.push(parseInt(el.value,10));
         }
       });
-
-      let correct = true;
-      if (inputs.length !== expectedAnswers.length) {
-        correct = false;
-      } else {
-        for (let i = 0; i < inputs.length; i++) {
-          if (inputs[i] !== expectedAnswers[i]) {
-            correct = false;
-            break;
-          }
-        }
-      }
-
+      let correct = inputs.length===expected.length && inputs.every((v,i)=>v===expected[i]);
       totalGuesses++;
-      if (correct) {
-        feedback.textContent = "Great job! You found the missing number!";
-        feedback.className = "feedback good";
+      if (correct){
+        fb.textContent="Great job! You found the missing number!";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Try again. Count the numbers out loud and listen for the missing one.";
-        feedback.className = "feedback bad";
+        fb.textContent="Try again. Count the numbers out loud and listen for the missing one.";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkRelation = function(id) {
-      const page = pages.find(p => p.id === id);
+    window.checkRelation = function(id){
+      const page = pages.find(p=>p.id===id);
       const d = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-      const input = document.getElementById(id + "_in");
-      const val = parseInt(input.value, 10);
-
+      const fb = document.getElementById(id+"_feedback");
+      const input = document.getElementById(id+"_in");
+      const val = parseInt(input.value,10);
       totalGuesses++;
-      if (val === d.answer) {
-        feedback.textContent = "Yes! That number fits perfectly.";
-        feedback.className = "feedback good";
+      if (val===d.answer){
+        fb.textContent="Yes! That number fits perfectly.";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Not quite. Use the number buttons and try again.";
-        feedback.className = "feedback bad";
+        fb.textContent="Not quite. Use the number buttons and try again.";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkChoice = function(id, choice) {
-      const page = pages.find(p => p.id === id);
+    window.checkChoice = function(id,choice){
+      const page = pages.find(p=>p.id===id);
       const d = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-
+      const fb = document.getElementById(id+"_feedback");
       totalGuesses++;
-      if (choice === d.number) {
-        feedback.textContent = "You matched the dots and the number!";
-        feedback.className = "feedback good";
+      if (choice===d.number){
+        fb.textContent="You matched the dots and the number!";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Oops! Count the dots one more time.";
-        feedback.className = "feedback bad";
+        fb.textContent="Oops! Count the dots one more time.";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkNext = function(id, choice) {
-      const page = pages.find(p => p.id === id);
+    window.checkNext = function(id,choice){
+      const page = pages.find(p=>p.id===id);
       const d = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-
+      const fb = document.getElementById(id+"_feedback");
       totalGuesses++;
-      if (choice === d.start + 1) {
-        feedback.textContent = "Yes! That’s the next number.";
-        feedback.className = "feedback good";
+      if (choice===d.start+1){
+        fb.textContent="Yes! That’s the next number.";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Try again. Say the numbers in order: " + d.start + ", ...";
-        feedback.className = "feedback bad";
+        fb.textContent="Try again. Say the numbers in order: "+d.start+", ...";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkFinish = function(id, choice) {
-      const page = pages.find(p => p.id === id);
+    window.checkFinish = function(id,choice){
+      const page = pages.find(p=>p.id===id);
       const d = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-
+      const fb = document.getElementById(id+"_feedback");
       totalGuesses++;
-      if (choice === d.correctNext) {
-        feedback.textContent = "Nice! You finished the sequence!";
-        feedback.className = "feedback good";
+      if (choice===d.correctNext){
+        fb.textContent="Nice! You finished the sequence!";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Say the pattern again and see what comes next.";
-        feedback.className = "feedback bad";
+        fb.textContent="Say the pattern again and see what comes next.";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    window.checkCard = function(id, choice) {
-      const page = pages.find(p => p.id === id);
+    window.checkCard = function(id,choice){
+      const page = pages.find(p=>p.id===id);
       const d = page.data;
-      const feedback = document.getElementById(id + "_feedback");
-
+      const fb = document.getElementById(id+"_feedback");
       totalGuesses++;
-      if (choice === d.correct) {
-        feedback.textContent = "Perfect pick! That card completes the sequence.";
-        feedback.className = "feedback good";
+      if (choice===d.correct){
+        fb.textContent="Perfect pick! That card completes the sequence.";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Look at the numbers and think: which one belongs in the space?";
-        feedback.className = "feedback bad";
+        fb.textContent="Look at the numbers and think: which one belongs in the space?";
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
 
-    // Guess My Number
-    window.clickGuessBubble = function(num) {
-      if (secretNumber === null) resetGuessGame();
+    window.clickGuessBubble = function(num){
+      if (secretNumber===null) resetGuessGame();
       playSound("soundClick");
-
-      const bubbles = document.querySelectorAll(".number-bubble[data-num]");
-      bubbles.forEach(b => b.classList.remove("clicked", "correct"));
-
-      const bubble = document.querySelector('.number-bubble[data-num="' + num + '"]');
+      const bubbles=document.querySelectorAll(".number-bubble[data-num]");
+      bubbles.forEach(b=>b.classList.remove("clicked","correct"));
+      const bubble=document.querySelector(`.number-bubble[data-num="${num}"]`);
       if (!bubble) return;
       bubble.classList.add("clicked");
-
-      const feedback = document.getElementById("guessFeedback");
+      const fb=document.getElementById("guessFeedback");
       totalGuesses++;
-
-      if (num === secretNumber) {
+      if (num===secretNumber){
         bubble.classList.add("correct");
-        guessMessage = "You got it! My secret number was " + secretNumber + "!";
-        feedback.className = "feedback good";
+        guessMessage="You got it! My secret number was "+secretNumber+"!";
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
-      } else if (num < secretNumber) {
-        guessMessage = "Higher than " + num + ". Tap a bigger number.";
-        feedback.className = "feedback bad";
+      } else if (num<secretNumber){
+        guessMessage="Higher than "+num+". Tap a bigger number.";
+        fb.className="feedback bad";
         playSound("soundError");
-        for (let i = 1; i <= num; i++) eliminated[i] = true;
+        for (let i=1;i<=num;i++) eliminated[i]=true;
       } else {
-        guessMessage = "Lower than " + num + ". Tap a smaller number.";
-        feedback.className = "feedback bad";
+        guessMessage="Lower than "+num+". Tap a smaller number.";
+        fb.className="feedback bad";
         playSound("soundError");
-        for (let i = num; i <= guessMax; i++) eliminated[i] = true;
+        for (let i=num;i<=guessMax;i++) eliminated[i]=true;
       }
-
-      feedback.textContent = guessMessage;
-      Object.keys(eliminated).forEach(n => {
-        const el = document.querySelector('.number-bubble[data-num="' + n + '"]');
+      fb.textContent=guessMessage;
+      Object.keys(eliminated).forEach(n=>{
+        const el=document.querySelector(`.number-bubble[data-num="${n}"]`);
         if (el) el.classList.add("eliminated");
       });
       updateStatsDisplay();
     };
 
-    window.resetGuessAndRender = function() {
-      playSound("soundClick");
-      resetGuessGame();
-      renderPage();
-    };
+    window.resetGuessAndRender = function(){ playSound("soundClick"); resetGuessGame(); renderPage(); };
+    window.setGuessStep = function(step){ playSound("soundClick"); guessStep=step; renderPage(); };
 
-    window.setGuessStep = function(step) {
-      playSound("soundClick");
-      guessStep = step;
-      renderPage();
-    };
-
-    // Letter game
-    window.setLetterCase = function(isUpper) {
-      letterUppercase = isUpper;
-      renderPage();
-    };
-
-    window.clickLetter = function(label) {
+    window.setLetterCase = function(isUpper){ letterUppercase=isUpper; renderPage(); };
+    window.clickLetter = function(label){
       const guessed = label.toUpperCase();
       const src = letterSoundUrls[guessed];
-      const audio = document.getElementById("letterSound");
-      if (audio && src) {
-        audio.src = src;
-        playSound("letterSound");
-      }
-      const feedback = document.getElementById("letterFeedback");
+      const audio=document.getElementById("letterSound");
+      if (audio && src){ audio.src=src; playSound("letterSound"); }
+      const fb=document.getElementById("letterFeedback");
       totalGuesses++;
-
-      if (guessed === targetLetter) {
-        feedback.textContent = `Yes! ${guessed} is the first letter.`;
-        feedback.className = "feedback good";
+      if (guessed===targetLetter){
+        fb.textContent=`Yes! ${guessed} is the first letter.`;
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = `That is ${label}. Listen and try another letter.`;
-        feedback.className = "feedback bad";
+        fb.textContent=`That is ${label}. Listen and try another letter.`;
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
+    window.resetLetterAndRender = function(){ playSound("soundClick"); resetLetterGame(); renderPage(); };
 
-    window.resetLetterAndRender = function() {
-      playSound("soundClick");
-      resetLetterGame();
-      renderPage();
-    };
-
-    // Vowel game
-    window.setVowelCase = function(isUpper) {
-      vowelUppercase = isUpper;
-      renderPage();
-    };
-
-    window.clickVowel = function(label) {
+    window.setVowelCase = function(isUpper){ vowelUppercase=isUpper; renderPage(); };
+    window.clickVowel = function(label){
       const guessed = label.toUpperCase();
-      const feedback = document.getElementById("vowelFeedback");
+      const fb=document.getElementById("vowelFeedback");
       totalGuesses++;
-
-      if (guessed === targetVowelItem.vowel) {
-        feedback.textContent = `Yes! That picture uses the ${guessed} sound.`;
-        feedback.className = "feedback good";
+      if (guessed===targetVowelItem.vowel){
+        fb.textContent=`Yes! That picture uses the ${guessed} sound.`;
+        fb.className="feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = `That is ${label}. Listen for a different vowel sound.`;
-        feedback.className = "feedback bad";
+        fb.textContent=`That is ${label}. Listen for a different vowel sound.`;
+        fb.className="feedback bad";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
+    window.resetVowelAndRender = function(){ playSound("soundClick"); resetVowelGame(); renderPage(); };
 
-    window.resetVowelAndRender = function() {
+    window.clickUnscrambleLetter = function(idx){
       playSound("soundClick");
-      resetVowelGame();
-      renderPage();
-    };
-
-    // Unscramble game – clickable letters and emoji on success
-    window.clickUnscrambleLetter = function(idx) {
-      playSound("soundClick");
-      if (currentUnscramble.used[idx]) return;
+      if (currentUnscrambleUsed[idx]) return;
       if (currentUnscrambleInput.length >= currentUnscramble.word.length) return;
-
       const letter = currentUnscramble.scrambled[idx];
       currentUnscrambleInput += letter;
-      currentUnscramble.used[idx] = true;
+      currentUnscrambleUsed[idx] = true;
       renderPage();
     };
-
-    window.clearUnscramble = function() {
+    window.clearUnscramble = function(){
       playSound("soundClick");
-      currentUnscrambleInput = "";
-      currentUnscramble.used = currentUnscramble.used.map(() => false);
+      currentUnscrambleInput="";
+      currentUnscrambleUsed = currentUnscrambleUsed.map(()=>false);
       renderPage();
     };
-
-    window.checkUnscramble = function() {
-      const feedback = document.getElementById("unscrambleFeedback");
-      const emojiDiv = document.getElementById("unscrambleEmoji");
-      const guess = (currentUnscrambleInput || "").toLowerCase();
-
+    window.checkUnscramble = function(){
+      const fb=document.getElementById("unscrambleFeedback");
+      const emojiDiv=document.getElementById("unscrambleEmoji");
+      const guess=(currentUnscrambleInput||"").toLowerCase();
       totalGuesses++;
-      if (guess === currentUnscramble.word) {
-        feedback.textContent = "Nice! You unscrambled the word " + currentUnscramble.word + "!";
-        feedback.className = "feedback good";
+      if (guess===currentUnscramble.word){
+        fb.textContent="Nice! You unscrambled the word "+currentUnscramble.word+"!";
+        fb.className="feedback good";
         emojiDiv.textContent = unscrambleWordEmoji[currentUnscramble.word] || "";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = "Try again. Tap the letters in order to build the word.";
-        feedback.className = "feedback bad";
-        emojiDiv.textContent = "";
+        fb.textContent="Try again. Tap the letters in order to build the word.";
+        fb.className="feedback bad";
+        emojiDiv.textContent="";
         playSound("soundError");
       }
       updateStatsDisplay();
     };
-
-    window.newUnscramble = function() {
+    window.newUnscramble = function(){
       playSound("soundClick");
-      currentUnscramble = pickUnscramble();
+      pickUnscramble();
       renderPage();
     };
 
-    // WH words activity
-    window.clickWh = function(word) {
-      const found = whItems.find(w => w.word === word);
-      if (found) {
-        currentWh = found;
-        renderPage();
-      }
+    window.clickWh = function(word){
+      const found = whItems.find(w=>w.word===word);
+      if (found){ currentWh=found; renderPage(); }
     };
 
-    // NAVIGATION (no sound)
-    homeBtn.addEventListener("click", () => {
-      currentPage = 0;
-      renderPage();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-      }
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (currentPage < pages.length - 1) {
-        currentPage++;
-        renderPage();
-      }
-    });
+    homeBtn.addEventListener("click", ()=>{ currentPage=0; renderPage(); });
+    prevBtn.addEventListener("click", ()=>{ if (currentPage>0){ currentPage--; renderPage(); } });
+    nextBtn.addEventListener("click", ()=>{ if (currentPage<pages.length-1){ currentPage++; renderPage(); } });
 
     resetGuessGame();
     renderPage();
