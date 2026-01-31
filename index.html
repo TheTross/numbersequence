@@ -278,8 +278,12 @@
     }
     .collection {
       margin-top: 6px;
-      font-size: 13px;
+      font-size: 18px;
       color: #5d4037;
+    }
+    .collection span {
+      font-size: 26px;
+      margin: 0 4px;
     }
     /* Letter game */
     .letter-grid {
@@ -299,13 +303,9 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .letter-image {
+    .letter-icon {
+      font-size: 64px;
       margin-top: 8px;
-      max-width: 160px;
-      max-height: 160px;
-      border-radius: 16px;
-      border: 3px solid #ffcc80;
-      background: #fff;
     }
   </style>
 </head>
@@ -370,8 +370,8 @@
     let totalGuesses = 0;
     let totalWins = 0;
 
-    // Gift collection
-    const possibleGifts = ["Puppy", "Kitten", "Toy Car", "Rocket", "Dinosaur", "Unicorn"];
+    // Gift collection as emoji icons
+    const possibleGifts = ["🐶", "🐱", "🚗", "🚀", "🦕", "🦄"];
     let giftCollection = [];
 
     function awardGift() {
@@ -386,16 +386,15 @@
       });
       const collEls = document.querySelectorAll(".collection");
       const text = giftCollection.length
-        ? "Gifts: " + giftCollection.join(", ")
+        ? "Gifts: " + giftCollection.map(g => `<span>${g}</span>`).join("")
         : "Gifts: (keep winning to collect prizes!)";
       collEls.forEach(el => {
-        el.textContent = text;
+        el.innerHTML = text;
       });
     }
 
     function handleWin() {
       totalWins++;
-      // award a gift every win (you can change to % 5 if you want less often)
       awardGift();
       showPresentPopup();
     }
@@ -468,35 +467,35 @@
       eliminated = {};
     }
 
-    // Letter game data – now image first, then choose letter
+    // Letter game – icon & word for each letter
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    const letterImages = {
-      A: { word: "Apple", url: "https://via.placeholder.com/150?text=A+Apple" },
-      B: { word: "Bee", url: "https://via.placeholder.com/150?text=B+Bee" },
-      C: { word: "Cat", url: "https://via.placeholder.com/150?text=C+Cat" },
-      D: { word: "Dog", url: "https://via.placeholder.com/150?text=D+Dog" },
-      E: { word: "Egg", url: "https://via.placeholder.com/150?text=E+Egg" },
-      F: { word: "Fish", url: "https://via.placeholder.com/150?text=F+Fish" },
-      G: { word: "Goat", url: "https://via.placeholder.com/150?text=G+Goat" },
-      H: { word: "Hat", url: "https://via.placeholder.com/150?text=H+Hat" },
-      I: { word: "Igloo", url: "https://via.placeholder.com/150?text=I+Igloo" },
-      J: { word: "Jam", url: "https://via.placeholder.com/150?text=J+Jam" },
-      K: { word: "Kite", url: "https://via.placeholder.com/150?text=K+Kite" },
-      L: { word: "Lion", url: "https://via.placeholder.com/150?text=L+Lion" },
-      M: { word: "Moon", url: "https://via.placeholder.com/150?text=M+Moon" },
-      N: { word: "Nest", url: "https://via.placeholder.com/150?text=N+Nest" },
-      O: { word: "Octopus", url: "https://via.placeholder.com/150?text=O+Octopus" },
-      P: { word: "Pig", url: "https://via.placeholder.com/150?text=P+Pig" },
-      Q: { word: "Queen", url: "https://via.placeholder.com/150?text=Q+Queen" },
-      R: { word: "Rabbit", url: "https://via.placeholder.com/150?text=R+Rabbit" },
-      S: { word: "Sun", url: "https://via.placeholder.com/150?text=S+Sun" },
-      T: { word: "Truck", url: "https://via.placeholder.com/150?text=T+Truck" },
-      U: { word: "Umbrella", url: "https://via.placeholder.com/150?text=U+Umbrella" },
-      V: { word: "Van", url: "https://via.placeholder.com/150?text=V+Van" },
-      W: { word: "Whale", url: "https://via.placeholder.com/150?text=W+Whale" },
-      X: { word: "Box (X)", url: "https://via.placeholder.com/150?text=X+Box" },
-      Y: { word: "Yarn", url: "https://via.placeholder.com/150?text=Y+Yarn" },
-      Z: { word: "Zebra", url: "https://via.placeholder.com/150?text=Z+Zebra" }
+    const letterData = {
+      A: { word: "Apple", icon: "🍎" },
+      B: { word: "Bee", icon: "🐝" },
+      C: { word: "Cat", icon: "🐱" },
+      D: { word: "Dog", icon: "🐶" },
+      E: { word: "Egg", icon: "🥚" },
+      F: { word: "Fish", icon: "🐟" },
+      G: { word: "Goat", icon: "🐐" },
+      H: { word: "Hat", icon: "🎩" },
+      I: { word: "Igloo", icon: "🏠" },
+      J: { word: "Jam", icon: "🍓" },
+      K: { word: "Kite", icon: "🪁" },
+      L: { word: "Lion", icon: "🦁" },
+      M: { word: "Moon", icon: "🌙" },
+      N: { word: "Nest", icon: "🪺" },
+      O: { word: "Octopus", icon: "🐙" },
+      P: { word: "Pig", icon: "🐷" },
+      Q: { word: "Queen", icon: "👑" },
+      R: { word: "Rabbit", icon: "🐰" },
+      S: { word: "Sun", icon: "☀️" },
+      T: { word: "Truck", icon: "🚚" },
+      U: { word: "Umbrella", icon: "☔" },
+      V: { word: "Van", icon: "🚐" },
+      W: { word: "Whale", icon: "🐋" },
+      X: { word: "Box (X)", icon: "📦" },
+      Y: { word: "Yarn", icon: "🧶" },
+      Z: { word: "Zebra", icon: "🦓" }
     };
     const letterSoundUrls = letters.reduce((acc, L) => {
       acc[L] = "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";
@@ -814,7 +813,7 @@
         if (guessStep === 1) {
           for (let n = 1; n <= guessMax; n += 1) numbers.push(n);
         } else if (guessStep === 2) {
-          for (let n = 2; n <= guessMax; n += 2) numbers.push(n); // 2,4,6…[web:111][web:156]
+          for (let n = 2; n <= guessMax; n += 2) numbers.push(n); // 2,4,6…[web:111]
         } else {
           for (let n = 3; n <= guessMax; n += 3) numbers.push(n); // 3,6,9…[web:112]
         }
@@ -847,12 +846,12 @@
       }
 
       if (p.type === "letterGame") {
-        const info = letterImages[targetLetter];
+        const info = letterData[targetLetter];
         html += `
           <div class="pill">Guess the Letter</div>
           <h2>What letter does this start with?</h2>
           <p>Look at the picture, listen to the sound, and tap the matching letter.</p>
-          <img class="letter-image" src="${info.url}" alt="${info.word}" />
+          <div class="letter-icon">${info.icon}</div>
           <p>${info.word}</p>
           <div class="letter-grid">
             ${letters.map(L => `
@@ -910,7 +909,6 @@
       const bubble = document.querySelector('.number-bubble[data-activity-num="' + num + '"]');
       if (bubble) bubble.classList.add("clicked");
 
-      // If current page is relation, fill that page's input
       const p = pages[currentPage];
       if (p.type === "relation") {
         const id = p.id;
@@ -1135,9 +1133,8 @@
       renderPage();
     };
 
-    // Letter game – image first, guess letter
+    // Letter game – icon first, guess letter
     window.clickLetter = function(L) {
-      // play sound for that letter
       const src = letterSoundUrls[L];
       const audio = document.getElementById("letterSound");
       if (audio && src) {
@@ -1148,7 +1145,8 @@
       totalGuesses++;
 
       if (L === targetLetter) {
-        feedback.textContent = `Yes! ${L} is the first letter in ${letterImages[L].word}.`;
+        const data = letterData[L];
+        feedback.textContent = `Yes! ${L} is the first letter in ${data.word}.`;
         feedback.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
