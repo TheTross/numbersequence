@@ -304,7 +304,7 @@
       cursor: pointer;
     }
     .letter-icon {
-      font-size: 64px;
+      font-size: 72px;
       margin-top: 8px;
     }
     .case-toggle {
@@ -326,11 +326,35 @@
       background: #fff3e0;
       border-radius: 18px;
       border: 2px solid #ff9800;
-      padding: 10px 16px;
-      font-size: 32px;
+      padding: 10px 18px;
+      font-size: 38px;
       font-weight: bold;
       cursor: pointer;
-      min-width: 60px;
+      min-width: 70px;
+    }
+    /* Unscramble game */
+    .unscramble-letters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 12px 0;
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .unscramble-letter-box {
+      border: 2px solid #90a4ae;
+      border-radius: 12px;
+      padding: 8px 14px;
+      min-width: 32px;
+    }
+    .unscramble-input {
+      margin-top: 10px;
+      font-size: 24px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 2px solid #90a4ae;
+      text-align: center;
+      width: 120px;
     }
   </style>
 </head>
@@ -505,7 +529,7 @@
       F: { word: "Fish", icon: "🐟" },
       G: { word: "Goat", icon: "🐐" },
       H: { word: "Hat", icon: "🎩" },
-      I: { word: "Igloo", icon: "🧊" }, // igloo-ish icon
+      I: { word: "Igloo", icon: "🏔" }, // clearer igloo-like icon[web:189]
       J: { word: "Jam", icon: "🍓" },
       K: { word: "Kite", icon: "🪁" },
       L: { word: "Lion", icon: "🦁" },
@@ -535,30 +559,50 @@
       targetLetter = letters[Math.floor(Math.random() * letters.length)];
     }
 
-    // Vowel sound game – more items, vowel can be middle or start/end[web:204][web:211]
+    // Vowel sound game – many items, vowel can be middle or elsewhere in the word[web:218][web:221]
     const vowels = ["A", "E", "I", "O", "U"];
     const vowelItems = [
-      // short A
+      // short A: cat/hat/bag
       { vowel: "A", icon: "🐱", hint: "cat" },
       { vowel: "A", icon: "👒", hint: "hat" },
-      // short E
+      { vowel: "A", icon: "👜", hint: "bag" },
+      // short E: bed/red/net
       { vowel: "E", icon: "🛏️", hint: "bed" },
-      { vowel: "E", icon: "🧹", hint: "red broom (red)" },
-      // short I
+      { vowel: "E", icon: "🟥", hint: "red" },
+      { vowel: "E", icon: "🎾", hint: "net" },
+      // short I: pig/lip/sit
       { vowel: "I", icon: "🐷", hint: "pig" },
-      { vowel: "I", icon: "🍦", hint: "ice" },
-      // short O
+      { vowel: "I", icon: "👄", hint: "lip" },
+      { vowel: "I", icon: "🪑", hint: "sit (chair)" },
+      // short O: dog/log/box
       { vowel: "O", icon: "🐶", hint: "dog" },
-      { vowel: "O", icon: "🍎", hint: "hot apple (hot)" },
-      // short U
+      { vowel: "O", icon: "🪵", hint: "log" },
+      { vowel: "O", icon: "📦", hint: "box" },
+      // short U: sun/cup/bug
       { vowel: "U", icon: "☀️", hint: "sun" },
-      { vowel: "U", icon: "☕", hint: "cup" }
+      { vowel: "U", icon: "☕", hint: "cup" },
+      { vowel: "U", icon: "🐞", hint: "bug" }
     ];
     let targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
     let vowelUppercase = true;
 
     function resetVowelGame() {
       targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
+    }
+
+    // Unscramble game – simple CVC words, no emojis[web:218][web:224]
+    const unscrambleWords = ["cat","dog","sun","pig","hat","bed","log","bug","cup","map"];
+    let currentUnscramble = pickUnscramble();
+
+    function shuffleString(str) {
+      return shuffleArray(str.split("")).join("");
+    }
+
+    function pickUnscramble() {
+      const word = unscrambleWords[Math.floor(Math.random() * unscrambleWords.length)];
+      let scrambled = shuffleString(word);
+      if (scrambled === word) scrambled = shuffleString(word);
+      return { word, scrambled };
     }
 
     // Build page list
@@ -591,6 +635,9 @@
 
     pages.push({ type: "sectionHeader", title: "Vowel Sounds" });
     pages.push({ type: "vowelGame", id: "vowel_1" });
+
+    pages.push({ type: "sectionHeader", title: "Unscramble the Word" });
+    pages.push({ type: "unscrambleGame", id: "unscramble_1" });
 
     pages.push({ type: "prizeCollection" });
 
@@ -667,6 +714,10 @@
               <b>Vowel Sounds</b>
               Guess the vowel
             </button>
+            <button class="home-btn" onclick="goToSection('unscramble')">
+              <b>Unscramble</b>
+              Build the word
+            </button>
             <button class="home-btn" onclick="goToSection('prizes')">
               <b>Prize Collection</b>
               See your gifts
@@ -700,7 +751,12 @@
           <h1>${p.title}</h1>
           <p class="tagline">Get ready for a new kind of game!</p>
         `;
-        if (!p.title.startsWith("Guess My Number") && !p.title.startsWith("Guess the Letter") && !p.title.startsWith("Vowel")) {
+        if (
+          !p.title.startsWith("Guess My Number") &&
+          !p.title.startsWith("Guess the Letter") &&
+          !p.title.startsWith("Vowel") &&
+          !p.title.startsWith("Unscramble")
+        ) {
           html += renderActivityNumberLine();
           html += `<div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div><div class="collection"></div>`;
         }
@@ -874,9 +930,9 @@
         if (guessStep === 1) {
           for (let n = 1; n <= guessMax; n += 1) numbers.push(n);
         } else if (guessStep === 2) {
-          for (let n = 2; n <= guessMax; n += 2) numbers.push(n); // 2,4,6…[web:204]
+          for (let n = 2; n <= guessMax; n += 2) numbers.push(n);
         } else {
-          for (let n = 3; n <= guessMax; n += 3) numbers.push(n); // 3,6,9…[web:211]
+          for (let n = 3; n <= guessMax; n += 3) numbers.push(n);
         }
         html += `
           <div class="pill">Guess My Number</div>
@@ -966,6 +1022,27 @@
         `;
       }
 
+      if (p.type === "unscrambleGame") {
+        html += `
+          <div class="pill">Unscramble</div>
+          <h2>Unscramble the word</h2>
+          <p>Look at the letters, say the sounds, and build the word.</p>
+          <div class="unscramble-letters">
+            ${currentUnscramble.scrambled.split("").map(ch => `
+              <div class="unscramble-letter-box">${ch}</div>
+            `).join("")}
+          </div>
+          <input id="unscrambleInput" class="unscramble-input" maxlength="3" />
+          <div>
+            <button onclick="checkUnscramble()">Check</button>
+            <button onclick="newUnscramble()">New Word</button>
+          </div>
+          <div id="unscrambleFeedback" class="feedback"></div>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
+          <div class="collection"></div>
+        `;
+      }
+
       if (p.type === "prizeCollection") {
         html += `
           <h1>Your Prize Collection</h1>
@@ -1035,6 +1112,8 @@
         targetIndex = firstIndexOfType("letterGame");
       } else if (section === "vowel") {
         targetIndex = firstIndexOfType("vowelGame");
+      } else if (section === "unscramble") {
+        targetIndex = firstIndexOfType("unscrambleGame");
       } else if (section === "prizes") {
         targetIndex = firstIndexOfType("prizeCollection");
       }
@@ -1299,6 +1378,32 @@
     window.resetVowelAndRender = function() {
       playSound("soundClick");
       resetVowelGame();
+      renderPage();
+    };
+
+    // Unscramble game
+    window.checkUnscramble = function() {
+      const input = document.getElementById("unscrambleInput");
+      const feedback = document.getElementById("unscrambleFeedback");
+      const guess = (input.value || "").toLowerCase();
+
+      totalGuesses++;
+      if (guess === currentUnscramble.word) {
+        feedback.textContent = "Nice! You unscrambled the word " + currentUnscramble.word + "!";
+        feedback.className = "feedback good";
+        playSound("soundSuccess");
+        handleWin();
+      } else {
+        feedback.textContent = "Try again. Say the sounds slowly and blend them.";
+        feedback.className = "feedback bad";
+        playSound("soundError");
+      }
+      updateStatsDisplay();
+    };
+
+    window.newUnscramble = function() {
+      playSound("soundClick");
+      currentUnscramble = pickUnscramble();
       renderPage();
     };
 
