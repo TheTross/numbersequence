@@ -285,7 +285,7 @@
       font-size: 26px;
       margin: 0 4px;
     }
-    /* Letter game */
+    /* Letter & vowel games */
     .letter-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -306,6 +306,21 @@
     .letter-icon {
       font-size: 64px;
       margin-top: 8px;
+    }
+    .case-toggle {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #455a64;
+    }
+    .case-toggle label {
+      cursor: pointer;
+      margin: 0 8px;
+    }
+    .vowel-grid {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 12px 0;
     }
   </style>
 </head>
@@ -395,8 +410,10 @@
 
     function handleWin() {
       totalWins++;
-      awardGift();
-      showPresentPopup();
+      if (totalWins > 0 && totalWins % 5 === 0) { // gift every 5 wins[web:198][web:201]
+        awardGift();
+        showPresentPopup();
+      }
     }
 
     // Words for numbers 1–10
@@ -467,7 +484,7 @@
       eliminated = {};
     }
 
-    // Letter game – icon & word for each letter
+    // Letter game – emoji icon for each letter
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const letterData = {
       A: { word: "Apple", icon: "🍎" },
@@ -502,9 +519,26 @@
       return acc;
     }, {});
     let targetLetter = letters[Math.floor(Math.random() * letters.length)];
+    let letterUppercase = true;
 
     function resetLetterGame() {
       targetLetter = letters[Math.floor(Math.random() * letters.length)];
+    }
+
+    // Vowel sound game
+    const vowels = ["A", "E", "I", "O", "U"];
+    const vowelItems = [
+      { vowel: "A", icon: "🍎" }, // apple
+      { vowel: "E", icon: "🥚" }, // egg
+      { vowel: "I", icon: "🍦" }, // ice cream
+      { vowel: "O", icon: "🐙" }, // octopus
+      { vowel: "U", icon: "☔" }  // umbrella
+    ];
+    let targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
+    let vowelUppercase = true;
+
+    function resetVowelGame() {
+      targetVowelItem = vowelItems[Math.floor(Math.random() * vowelItems.length)];
     }
 
     // Build page list
@@ -534,6 +568,9 @@
 
     pages.push({ type: "sectionHeader", title: "Guess the Letter" });
     pages.push({ type: "letterGame", id: "letter_1" });
+
+    pages.push({ type: "sectionHeader", title: "Vowel Sounds" });
+    pages.push({ type: "vowelGame", id: "vowel_1" });
 
     pages.push({ type: "prizeCollection" });
 
@@ -604,7 +641,11 @@
             </button>
             <button class="home-btn" onclick="goToSection('letter')">
               <b>Guess the Letter</b>
-              Picture & sounds
+              Emoji & sounds
+            </button>
+            <button class="home-btn" onclick="goToSection('vowel')">
+              <b>Vowel Sounds</b>
+              Guess the vowel
             </button>
             <button class="home-btn" onclick="goToSection('prizes')">
               <b>Prize Collection</b>
@@ -639,7 +680,7 @@
           <h1>${p.title}</h1>
           <p class="tagline">Get ready for a new kind of game!</p>
         `;
-        if (!p.title.startsWith("Guess My Number") && !p.title.startsWith("Guess the Letter")) {
+        if (!p.title.startsWith("Guess My Number") && !p.title.startsWith("Guess the Letter") && !p.title.startsWith("Vowel")) {
           html += renderActivityNumberLine();
           html += `<div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div><div class="collection"></div>`;
         }
@@ -847,19 +888,59 @@
 
       if (p.type === "letterGame") {
         const info = letterData[targetLetter];
+        const labelLetters = letterUppercase ? letters : letters.map(l => l.toLowerCase());
         html += `
           <div class="pill">Guess the Letter</div>
           <h2>What letter does this start with?</h2>
           <p>Look at the picture, listen to the sound, and tap the matching letter.</p>
           <div class="letter-icon">${info.icon}</div>
-          <p>${info.word}</p>
+          <div class="case-toggle">
+            <label>
+              <input type="radio" name="letterCase" value="upper" ${letterUppercase ? "checked" : ""} onclick="setLetterCase(true)" />
+              Uppercase
+            </label>
+            <label>
+              <input type="radio" name="letterCase" value="lower" ${!letterUppercase ? "checked" : ""} onclick="setLetterCase(false)" />
+              Lowercase
+            </label>
+          </div>
           <div class="letter-grid">
-            ${letters.map(L => `
+            ${labelLetters.map(L => `
               <button class="letter-btn" onclick="clickLetter('${L}')">${L}</button>
             `).join("")}
           </div>
           <div id="letterFeedback" class="feedback"></div>
           <button onclick="resetLetterAndRender()">New Picture</button>
+          <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
+          <div class="collection"></div>
+        `;
+      }
+
+      if (p.type === "vowelGame") {
+        const item = targetVowelItem;
+        const labelVowels = vowelUppercase ? vowels : vowels.map(v => v.toLowerCase());
+        html += `
+          <div class="pill">Vowel Sounds</div>
+          <h2>Which vowel sound do you hear?</h2>
+          <p>Look at the picture and tap the vowel you think it uses.</p>
+          <div class="letter-icon">${item.icon}</div>
+          <div class="case-toggle">
+            <label>
+              <input type="radio" name="vowelCase" value="upper" ${vowelUppercase ? "checked" : ""} onclick="setVowelCase(true)" />
+              Uppercase
+            </label>
+            <label>
+              <input type="radio" name="vowelCase" value="lower" ${!vowelUppercase ? "checked" : ""} onclick="setVowelCase(false)" />
+              Lowercase
+            </label>
+          </div>
+          <div class="vowel-grid">
+            ${labelVowels.map(V => `
+              <button class="letter-btn" onclick="clickVowel('${V}')">${V}</button>
+            `).join("")}
+          </div>
+          <div id="vowelFeedback" class="feedback"></div>
+          <button onclick="resetVowelAndRender()">New Vowel Picture</button>
           <div class="stats">Guesses: ${totalGuesses} | Wins: ${totalWins}</div>
           <div class="collection"></div>
         `;
@@ -932,6 +1013,8 @@
         targetIndex = firstIndexOfType("guessNumber");
       } else if (section === "letter") {
         targetIndex = firstIndexOfType("letterGame");
+      } else if (section === "vowel") {
+        targetIndex = firstIndexOfType("vowelGame");
       } else if (section === "prizes") {
         targetIndex = firstIndexOfType("prizeCollection");
       }
@@ -1133,9 +1216,16 @@
       renderPage();
     };
 
-    // Letter game – icon first, guess letter
-    window.clickLetter = function(L) {
-      const src = letterSoundUrls[L];
+    // Letter game – icon first, guess letter, case toggle
+    window.setLetterCase = function(isUpper) {
+      letterUppercase = isUpper;
+      renderPage();
+    };
+
+    window.clickLetter = function(label) {
+      // label might be lower/upper; normalize to upper for logic
+      const guessed = label.toUpperCase();
+      const src = letterSoundUrls[guessed];
       const audio = document.getElementById("letterSound");
       if (audio && src) {
         audio.src = src;
@@ -1144,14 +1234,14 @@
       const feedback = document.getElementById("letterFeedback");
       totalGuesses++;
 
-      if (L === targetLetter) {
-        const data = letterData[L];
-        feedback.textContent = `Yes! ${L} is the first letter in ${data.word}.`;
+      if (guessed === targetLetter) {
+        const data = letterData[targetLetter];
+        feedback.textContent = `Yes! ${guessed} is the first letter.`;
         feedback.className = "feedback good";
         playSound("soundSuccess");
         handleWin();
       } else {
-        feedback.textContent = `That is ${L}. Listen and try another letter.`;
+        feedback.textContent = `That is ${label}. Listen and try another letter.`;
         feedback.className = "feedback bad";
         playSound("soundError");
       }
@@ -1161,6 +1251,36 @@
     window.resetLetterAndRender = function() {
       playSound("soundClick");
       resetLetterGame();
+      renderPage();
+    };
+
+    // Vowel game – emoji, vowel buttons with case toggle
+    window.setVowelCase = function(isUpper) {
+      vowelUppercase = isUpper;
+      renderPage();
+    };
+
+    window.clickVowel = function(label) {
+      const guessed = label.toUpperCase();
+      const feedback = document.getElementById("vowelFeedback");
+      totalGuesses++;
+
+      if (guessed === targetVowelItem.vowel) {
+        feedback.textContent = `Yes! That picture uses the ${guessed} sound.`;
+        feedback.className = "feedback good";
+        playSound("soundSuccess");
+        handleWin();
+      } else {
+        feedback.textContent = `That is ${label}. Listen for a different vowel sound.`;
+        feedback.className = "feedback bad";
+        playSound("soundError");
+      }
+      updateStatsDisplay();
+    };
+
+    window.resetVowelAndRender = function() {
+      playSound("soundClick");
+      resetVowelGame();
       renderPage();
     };
 
