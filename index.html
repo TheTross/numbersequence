@@ -288,6 +288,7 @@
       font-weight: bold;
       cursor: pointer;
       min-width: 80px;
+      color: #1b5e20;
     }
     .wh-display { margin-top: 16px; font-size: 20px; }
     .wh-big-word {
@@ -398,26 +399,95 @@
     const numberWords = ["","one","two","three","four","five","six","seven","eight","nine","ten"];
     const numberPages = Array.from({ length: 10 }, (_, i) => ({ type:"number", n:i+1 }));
 
-    const missingPages = [
-      { sequence:[1,2,null,4], answers:[3] },
-      { sequence:[3,null,5], answers:[4] },
-      { sequence:[3,null,7], answers:[5] },
-      { sequence:[6,7,null,9,10], answers:[8] },
-      { sequence:[2,null,6,null,10], answers:[4,8] }
-    ];
+    // ---------- RANDOM GENERATORS ----------
 
-    const relationPages = [
-      { mode:"before", shown:5, answer:4 },
-      { mode:"after", shown:7, answer:8 },
-      { mode:"between", left:4, right:6, answer:5 }
-    ];
+    // Missing-number questions (1–10 sequences)
+    function generateMissingItems(count) {
+      const items = [];
+      for (let k = 0; k < count; k++) {
+        const length = 4 + Math.floor(Math.random() * 2); // 4 or 5 terms
+        const start = 1 + Math.floor(Math.random() * 5);  // 1–5
+        const step = 1;                                   // simple counting
+        const seq = [];
+        for (let i = 0; i < length; i++) {
+          seq.push(start + i * step);
+        }
+        // decide which positions will be missing (1–2 blanks)
+        let indices = [];
+        if (length === 4) indices = [Math.floor(Math.random()*4)];
+        else {
+          const all = [0,1,2,3,4];
+          indices = shuffleArray(all).slice(0,2).sort();
+        }
+        const answers = indices.map(i => seq[i]);
+        const withNulls = seq.map((v,i) => indices.includes(i) ? null : v);
+        items.push({ sequence: withNulls, answers });
+      }
+      return items;
+    }
 
-    const extraPages = [
-      { type:"match", number:4, options:[2,4,6] },
-      { type:"nextNumber", start:3, options:[2,4,5] },
-      { type:"finishSequence", pattern:[1,2,3], correctNext:4, choices:[4,5,6] },
-      { type:"cardPick", displaySequence:[5,null,7], correct:6, cardOptions:[4,6,8] }
-    ];
+    // Before / After / Between questions
+    function generateRelationItems(count) {
+      const modes = ["before","after","between"];
+      const items = [];
+      while (items.length < count) {
+        const mode = modes[Math.floor(Math.random()*modes.length)];
+        if (mode === "before") {
+          const shown = 2 + Math.floor(Math.random()*8); // 2–9
+          items.push({ mode, shown, answer: shown-1 });
+        } else if (mode === "after") {
+          const shown = 1 + Math.floor(Math.random()*9); // 1–9
+          items.push({ mode, shown, answer: shown+1 });
+        } else {
+          const left = 1 + Math.floor(Math.random()*8);  // 1–8
+          const right = left + 2;                        // gap of 2
+          const answer = left + 1;
+          items.push({ mode, left, right, answer });
+        }
+      }
+      return items;
+    }
+
+    // Number game items (match / next / pattern / card)
+    function generateGameItems(count) {
+      const items = [];
+      const types = ["match","nextNumber","finishSequence","cardPick"];
+      while (items.length < count) {
+        const t = types[Math.floor(Math.random()*types.length)];
+        if (t === "match") {
+          const num = 2 + Math.floor(Math.random()*8); // 2–9 dots
+          const options = shuffleArray([num-1, num, num+1].filter(n=>n>=1&&n<=10));
+          items.push({ type:"match", number:num, options });
+        } else if (t === "nextNumber") {
+          const start = 1 + Math.floor(Math.random()*8); // 1–8
+          const correct = start+1;
+          const pool = shuffleArray([correct, correct-1, correct+1].filter(n=>n>=1&&n<=10));
+          items.push({ type:"nextNumber", start, options: pool, correct });
+        } else if (t === "finishSequence") {
+          const start = 1 + Math.floor(Math.random()*4); // 1–4
+          const step = 1 + Math.floor(Math.random()*2);  // 1 or 2
+          const pattern = [start, start+step, start+2*step].filter(n=>n<=10);
+          if (pattern.length < 3) continue;
+          const correctNext = start+3*step;
+          if (correctNext > 10) continue;
+          const choices = shuffleArray([correctNext, correctNext-1, correctNext+1].filter(n=>n>=1&&n<=10));
+          items.push({ type:"finishSequence", pattern, correctNext, choices });
+        } else { // cardPick
+          const start = 1 + Math.floor(Math.random()*6); // 1–6
+          const correct = start+1;
+          const seq = [start, null, start+2];
+          const options = shuffleArray([correct, correct-1, correct+1].filter(n=>n>=1&&n<=10));
+          items.push({ type:"cardPick", displaySequence:seq, correct, cardOptions:options });
+        }
+      }
+      return items;
+    }
+
+    const missingPagesData = generateMissingItems(6);
+    const relationPagesData = generateRelationItems(6);
+    const extraPagesData = generateGameItems(6);
+
+    // ---------- END RANDOM GENERATORS ----------
 
     const guessMin = 0;
     const guessMax = 20;
@@ -436,12 +506,16 @@
     const letterData = {
       A:{ word:"Apple", icon:"🍎" }, B:{ word:"Bee", icon:"🐝" }, C:{ word:"Cat", icon:"🐱" },
       D:{ word:"Dog", icon:"🐶" }, E:{ word:"Egg", icon:"🥚" }, F:{ word:"Fish", icon:"🐟" },
-      G:{ word:"Goat", icon:"🐐" }, H:{ word:"Hat", icon:"🎩" }, I:{ word:"Igloo", icon:"🏔" },
-      J:{ word:"Jam", icon:"🍓" }, K:{ word:"Kite", icon:"🪁" }, L:{ word:"Lion", icon:"🦁" },
-      M:{ word:"Moon", icon:"🌙" }, N:{ word:"Nest", icon:"🪺" }, O:{ word:"Octopus", icon:"🐙" },
-      P:{ word:"Pig", icon:"🐷" }, Q:{ word:"Queen", icon:"👑" }, R:{ word:"Rabbit", icon:"🐰" },
-      S:{ word:"Sun", icon:"☀️" }, T:{ word:"Truck", icon:"🚚" }, U:{ word:"Umbrella", icon:"☔" },
-      V:{ word:"Van", icon:"🚐" }, W:{ word:"Whale", icon:"🐋" }, X:{ word:"Box (X)", icon:"📦" },
+      G:{ word:"Goat", icon:"🐐" }, H:{ word:"Hat", icon:"🎩" },
+      I:{ word:"Ice", icon:"🧊" },        // updated
+      J:{ word:"Jam", icon:"🍓🫙" },      // strawberry jam[web:282]
+      K:{ word:"Kite", icon:"🪁" }, L:{ word:"Lion", icon:"🦁" },
+      M:{ word:"Moon", icon:"🌙" }, N:{ word:"Nest", icon:"🪺" },
+      O:{ word:"Octopus", icon:"🐙" }, P:{ word:"Pig", icon:"🐷" },
+      Q:{ word:"Queen", icon:"👑" }, R:{ word:"Rabbit", icon:"🐰" },
+      S:{ word:"Sun", icon:"☀️" }, T:{ word:"Truck", icon:"🚚" },
+      U:{ word:"Umbrella", icon:"☔" }, V:{ word:"Van", icon:"🚐" },
+      W:{ word:"Whale", icon:"🐋" }, X:{ word:"Box (X)", icon:"📦" },
       Y:{ word:"Yarn", icon:"🧶" }, Z:{ word:"Zebra", icon:"🦓" }
     };
     const letterSoundUrls = letters.reduce((acc,L)=>{acc[L]="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";return acc;}, {});
@@ -454,15 +528,18 @@
       { vowel:"A", icon:"🍎", hint:"apple" },
       { vowel:"A", icon:"🐱", hint:"cat" },
       { vowel:"A", icon:"👒", hint:"hat" },
+
       { vowel:"E", icon:"🛏️", hint:"bed" },
       { vowel:"E", icon:"🟥", hint:"red" },
       { vowel:"E", icon:"🎾", hint:"net" },
+
       { vowel:"I", icon:"🐷", hint:"pig" },
       { vowel:"I", icon:"👄", hint:"lip" },
-      { vowel:"I", icon:"🪑", hint:"sit" },
+
       { vowel:"O", icon:"🐶", hint:"dog" },
       { vowel:"O", icon:"🪵", hint:"log" },
       { vowel:"O", icon:"📦", hint:"box" },
+
       { vowel:"U", icon:"☀️", hint:"sun" },
       { vowel:"U", icon:"☕", hint:"cup" },
       { vowel:"U", icon:"🐞", hint:"bug" }
@@ -493,10 +570,10 @@
 
     // WH words
     const whItems = [
-      { word:"Who",   emoji:"👩🏻‍🦱👨🏾‍🦱👧🏼", hint:"a person" },   // mixed people[web:252][web:261]
+      { word:"Who",   emoji:"👩🏻‍🦱👨🏾‍🦱👧🏼", hint:"a person" },
       { word:"What",  emoji:"📦",             hint:"a thing" },
       { word:"When",  emoji:"⏰",             hint:"a time" },
-      { word:"Where", emoji:"🗺️",            hint:"a place" },    // treasure map[web:247][web:249]
+      { word:"Where", emoji:"🗺️",            hint:"a place" },
       { word:"Why",   emoji:"❓",             hint:"a reason" },
       { word:"How",   emoji:"🛠️",            hint:"a way" }
     ];
@@ -509,13 +586,13 @@
     numberPages.forEach(p=>pages.push(p));
 
     pages.push({ type:"sectionHeader", title:"Missing Numbers" });
-    missingPages.forEach((item,i)=>pages.push({ type:"missing", data:item, id:"missing_"+i }));
+    missingPagesData.forEach((item,i)=>pages.push({ type:"missing", data:item, id:"missing_"+i }));
 
     pages.push({ type:"sectionHeader", title:"Before, After & Between" });
-    relationPages.forEach((item,i)=>pages.push({ type:"relation", data:item, id:"relation_"+i }));
+    relationPagesData.forEach((item,i)=>pages.push({ type:"relation", data:item, id:"relation_"+i }));
 
     pages.push({ type:"sectionHeader", title:"Fun Number Games" });
-    extraPages.forEach((item,i)=>pages.push({ type:item.type, data:item, id:"extra_"+i }));
+    extraPagesData.forEach((item,i)=>pages.push({ type:item.type, data:item, id:"extra_"+i }));
 
     pages.push({ type:"sectionHeader", title:"Guess My Number (1–20)" });
     pages.push({ type:"guessNumber", id:"guess_1" });
@@ -1077,7 +1154,7 @@
         return;
       }
 
-      const correct = d.start + 1;
+      const correct = d.correct ?? (d.start + 1);
       totalGuesses++;
       if (activitySelectedTop === correct && activitySelectedNumber === correct) {
         fb.textContent = "Yes! That’s the next number.";
